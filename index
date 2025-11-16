@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จองรถตู้ลีโมซีน - Al Hijrah & Travel</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); 
+            min-height: 100vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 600px; 
+            width: 100%;
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin: auto;
+        }
+        .header { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 20px 20px 0 0; }
+        .company-logo { 
+            width: 80px; 
+            height: 80px; 
+            margin: 0 auto 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .company-logo img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .company-logo-text {
+            font-size: 28px;
+            color: #2e7d32;
+            font-weight: bold;
+            display: none;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.95; margin-bottom: 8px; }
+        .header .subtitle { font-size: 13px; opacity: 0.9; font-weight: 300; }
+        .price-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: rgba(255,193,7,0.9); 
+            color: #1b5e20;
+            padding: 12px 20px; 
+            border-radius: 25px; 
+            margin-top: 15px; 
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; }
+        .form-container { padding: 30px 20px; }
+        .section { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .section-title { font-size: 16px; color: #2e7d32; margin-bottom: 15px; font-weight: 600; }
+        .route-selector { display: flex; gap: 15px; margin-bottom: 20px; }
+        .route-option { 
+            flex: 1; 
+            padding: 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            text-align: center;
+            transition: all 0.3s;
+            background: white;
+        }
+        .route-option:hover { border-color: #2e7d32; transform: translateY(-2px); }
+        .route-option.active { 
+            border-color: #2e7d32; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        .route-option input[type="radio"] { display: none; }
+        .route-option label { 
+            cursor: pointer; 
+            font-size: 15px; 
+            font-weight: 600;
+            color: #333;
+            display: block;
+        }
+        .route-option.active label { color: #1b5e20; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; font-weight: 500; }
+        .input-group input, .input-group select, .input-group textarea { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            transition: all 0.3s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .input-group textarea { resize: vertical; min-height: 80px; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { 
+            outline: none; 
+            border-color: #2e7d32; 
+        }
+        .input-group input[type="date"], .input-group input[type="time"] { 
+            cursor: pointer;
+        }
+        .input-group input[type="date"]::-webkit-calendar-picker-indicator,
+        .input-group input[type="time"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
+        .input-group .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
+        .input-group.has-error input, .input-group.has-error select { border-color: #d32f2f; }
+        .input-group.has-error .error { display: block; }
+        .time-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .time-slot { 
+            padding: 12px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 10px; 
+            text-align: center; 
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .time-slot:hover { border-color: #2e7d32; }
+        .time-slot.active { 
+            border-color: #2e7d32; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            font-weight: bold;
+        }
+        .time-slot input[type="radio"] { display: none; }
+        .submit-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); 
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4); 
+        }
+        .submit-btn:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6); 
+        }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .footer-note { text-align: center; color: #999; font-size: 13px; margin-top: 15px; }
+        .info-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .info-box p { margin: 5px 0; font-size: 14px; color: #e65100; }
+        .loading-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7); 
+            z-index: 9999;
+        }
+        .loading-overlay.active { 
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+        }
+        .loading-content { 
+            background: white; 
+            padding: 30px 40px; 
+            border-radius: 15px; 
+            text-align: center; 
+            max-width: 280px;
+            margin: auto;
+        }
+        .spinner { 
+            width: 50px; 
+            height: 50px; 
+            border: 5px solid #f3f3f3; 
+            border-top: 5px solid #2e7d32; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+            margin: 0 auto 20px; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .success-message, .error-message { 
+            display: none; 
+            color: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        .success-message { background: #4caf50; }
+        .error-message { background: #f44336; }
+        .debug-info { 
+            background: #fff3cd; 
+            border: 1px solid #ffc107; 
+            padding: 10px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            font-size: 12px; 
+            display: none; 
+        }
+        @media (max-width: 600px) { 
+            body { padding: 10px; }
+            .route-selector { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="company-logo">
+                <img id="logoImage" 
+                     src="https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/main/logo.png" 
+                     alt="Al Hijrah & Travel"
+                     crossorigin="anonymous"
+                     onerror="handleLogoError(this)">
+                <div class="company-logo-text">AH&T</div>
+            </div>
+            <h1>Al Hijrah & Travel</h1>
+            <p>จองรถตู้ลีโมซีน รับ-ส่ง สนามบินหาดใหญ่</p>
+            <p class="subtitle">สนามบินหาดใหญ่ ⇄ ปัตตานี</p>
+            <div class="price-badge">
+                🚐 350 บาท/ที่นั่ง/รอบ
+            </div>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <img id="userPicture" src="" alt="Profile">
+                <div class="name" id="userName">กำลังโหลด...</div>
+            </div>
+        </div>
+        <div class="form-container">
+            <div class="debug-info" id="debugInfo"></div>
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="info-box">
+                <p>⏱️ ใช้เวลาเดินทางประมาณ 2 ชั่วโมง</p>
+                <p>📋 จองล่วงหน้าอย่างน้อย 1 วันก่อนเดินทาง</p>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🚐 เลือกเส้นทาง</div>
+                <div class="route-selector">
+                    <div class="route-option active" onclick="selectRoute('airport-pattani')">
+                        <input type="radio" id="airport-pattani" name="route" value="สนามบิน → ปัตตานี" checked>
+                        <label for="airport-pattani">🛬 สนามบิน → ปัตตานี</label>
+                    </div>
+                    <div class="route-option" onclick="selectRoute('pattani-airport')">
+                        <input type="radio" id="pattani-airport" name="route" value="ปัตตานี → สนามบิน">
+                        <label for="pattani-airport">🛫 ปัตตานี → สนามบิน</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📅 วันที่เดินทาง</div>
+                <div class="input-group" id="dateGroup">
+                    <label>เลือกวันที่</label>
+                    <input type="date" id="travelDate">
+                    <small>กรุณาจองล่วงหน้าอย่างน้อย 1 วัน</small>
+                    <small class="error">กรุณาเลือกวันที่</small>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🕐 เลือกรอบเดินทาง</div>
+                <div id="timeSlotContainer"></div>
+                <input type="hidden" id="selectedTime">
+                <small class="error" id="timeError" style="display: none; margin-top: 10px;">กรุณาเลือกรอบเดินทาง</small>
+            </div>
+
+            <div class="section">
+                <div class="section-title">✈️ ข้อมูลเที่ยวบิน</div>
+                <div class="input-group">
+                    <label>สายการบิน</label>
+                    <input type="text" id="airline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
+                    <small>ระบุสายการบินที่คุณจะเดินทาง</small>
+                </div>
+                <div class="input-group">
+                    <label id="flightTimeLabel">เวลาลงเครื่อง</label>
+                    <input type="time" id="flightTime">
+                    <small id="flightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">👤 ข้อมูลผู้จอง</div>
+                <div class="input-group" id="nameGroup">
+                    <label>ชื่อ-นามสกุล</label>
+                    <input type="text" id="customerName" placeholder="กรอกชื่อ-นามสกุล">
+                    <small class="error">กรุณากรอกชื่อ-นามสกุล</small>
+                </div>
+                <div class="input-group" id="phoneGroup">
+                    <label>เบอร์โทรศัพท์</label>
+                    <input type="tel" id="phone" placeholder="08X-XXX-XXXX">
+                    <small>เพื่อติดต่อยืนยันการจอง</small>
+                    <small class="error">กรุณากรอกเบอร์โทรศัพท์</small>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📍 จุดรับ/ส่ง</div>
+                <div class="input-group" id="locationGroup">
+                    <label id="locationLabel">จุดส่ง (ในพื้นที่ปัตตานี)</label>
+                    <textarea id="location" rows="3" placeholder="ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี"></textarea>
+                    <small>ระบุที่อยู่หรือสถานที่ให้ชัดเจน</small>
+                    <small class="error">กรุณาระบุจุดรับ/ส่ง</small>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💺 จำนวนที่นั่ง</div>
+                <div class="input-group">
+                    <label>จำนวนที่นั่งที่ต้องการจอง</label>
+                    <input type="number" id="seatCount" min="1" value="1" style="text-align: center; font-size: 18px; font-weight: bold;">
+                    <small>1 ที่นั่ง = 350 บาท</small>
+                </div>
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;">
+                    <p style="font-size: 14px; color: #666; margin-bottom: 5px;">ราคารวม</p>
+                    <p style="font-size: 24px; font-weight: bold; color: #2e7d32;" id="totalPrice">350 บาท</p>
+                </div>
+            </div>
+
+            <button class="submit-btn" type="button" id="submitBtn">จองรถตู้</button>
+            <p class="footer-note">💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองค่ะ</p>
+        </div>
+    </div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p style="font-size: 16px; color: #333;">กำลังส่งข้อมูล...</p>
+            <p style="font-size: 13px; color: #999; margin-top: 10px;">กรุณารอสักครู่</p>
+        </div>
+    </div>
+    <script>
+        const CONFIG = {
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyTpjQBMHPY9BrT4Zp-N_If-tBXT5AdnW-VhhxfsMBIU4zKfrbyMSU97xmR09BGaR4aQw/exec',
+            LIFF_ID: '2008429094-y2WmXkYQ'
+        };
+        
+        const TIME_SLOTS = {
+            'airport-pattani': [
+                '05:00', '06:00', '08:00', '10:00', '12:30', '14:00', '16:00', '18:30'
+            ],
+            'pattani-airport': [
+                '09:00', '11:00', '13:00', '15:00', '17:30', '19:30', '21:30'
+            ]
+        };
+        
+        let userProfile = null;
+        let isLiffReady = false;
+        
+        function showDebug(message) {
+            const debugEl = document.getElementById('debugInfo');
+            debugEl.textContent = message;
+            debugEl.style.display = 'block';
+            console.log('DEBUG:', message);
+        }
+        
+        function showMessage(type, message) {
+            const el = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+            document.getElementById('submitBtn').disabled = show;
+        }
+        
+        function showError(groupId, message) {
+            const el = document.getElementById(groupId);
+            if (el) {
+                el.classList.add('has-error');
+                const errorEl = el.querySelector('.error');
+                if (errorEl && message) errorEl.textContent = message;
+            } else if (groupId === 'timeError') {
+                document.getElementById('timeError').style.display = 'block';
+            }
+        }
+        
+        function clearError(groupId) {
+            const el = document.getElementById(groupId);
+            if (el) el.classList.remove('has-error');
+            if (groupId === 'timeError') {
+                document.getElementById('timeError').style.display = 'none';
+            }
+        }
+        
+        function getTodayDate() {
+            const d = new Date();
+            d.setDate(d.getDate() + 1);
+            return d.toISOString().split('T')[0];
+        }
+        
+        function formatDateThai(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            const year = parseInt(parts[0]) + 543;
+            return `${parts[2]}/${parts[1]}/${year}`;
+        }
+        
+        function validatePhone(phone) {
+            if (!phone) return false;
+            return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
+        }
+        
+        function handleLogoError(img) {
+            console.log('❌ Logo load failed:', img.src);
+            const alternatives = [
+                'https://cdn.jsdelivr.net/gh/wanritter-debug/al-hijrah-assets@main/logo.png',
+                'https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/refs/heads/main/logo.png'
+            ];
+            
+            const currentIndex = alternatives.indexOf(img.src);
+            const nextIndex = currentIndex + 1;
+            
+            if (nextIndex < alternatives.length && !img.dataset.finalFail) {
+                console.log('🔄 Trying alternative:', alternatives[nextIndex]);
+                img.src = alternatives[nextIndex];
+                if (nextIndex === alternatives.length - 1) {
+                    img.dataset.finalFail = 'true';
+                }
+            } else {
+                console.log('💬 Using text fallback: AH&T');
+                img.style.display = 'none';
+                img.nextElementSibling.style.display = 'block';
+            }
+        }
+        
+        function selectRoute(routeId) {
+            document.querySelectorAll('.route-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelector(`[onclick="selectRoute('${routeId}')"]`).classList.add('active');
+            document.getElementById(routeId).checked = true;
+            
+            const flightTimeLabel = document.getElementById('flightTimeLabel');
+            const flightTimeHint = document.getElementById('flightTimeHint');
+            const locationLabel = document.getElementById('locationLabel');
+            
+            if (routeId === 'airport-pattani') {
+                flightTimeLabel.textContent = 'เวลาลงเครื่อง';
+                flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
+                locationLabel.textContent = 'จุดส่ง (ในพื้นที่ปัตตานี)';
+            } else {
+                flightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
+                flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
+                locationLabel.textContent = 'จุดรับ (ในพื้นที่ปัตตานี)';
+            }
+            
+            renderTimeSlots(routeId);
+            document.getElementById('selectedTime').value = '';
+        }
+        
+        function renderTimeSlots(route) {
+            const container = document.getElementById('timeSlotContainer');
+            const slots = TIME_SLOTS[route];
+            
+            container.innerHTML = '<div class="time-slots">' + slots.map(time => `
+                <div class="time-slot" onclick="selectTimeSlot('${time}')">
+                    <input type="radio" name="timeSlot" value="${time}" id="time-${time}">
+                    <label for="time-${time}">${time} น.</label>
+                </div>
+            `).join('') + '</div>';
+        }
+        
+        function selectTimeSlot(time) {
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('selectedTime').value = time;
+            clearError('timeError');
+        }
+        
+        function updateTotalPrice() {
+            const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
+            const total = seatCount * 350;
+            document.getElementById('totalPrice').textContent = total.toLocaleString() + ' บาท';
+        }
+        
+        const datePicker = document.getElementById('travelDate');
+        const minDate = getTodayDate();
+        datePicker.min = minDate;
+        datePicker.value = minDate;
+        
+        datePicker.addEventListener('change', () => clearError('dateGroup'));
+        
+        document.getElementById('seatCount').addEventListener('input', updateTotalPrice);
+        
+        renderTimeSlots('airport-pattani');
+        
+        window.addEventListener('load', async () => {
+            let retries = 0;
+            const maxRetries = 10;
+            
+            const waitForLiff = () => {
+                return new Promise((resolve, reject) => {
+                    const checkLiff = setInterval(() => {
+                        retries++;
+                        if (typeof liff !== 'undefined') {
+                            clearInterval(checkLiff);
+                            resolve(true);
+                        } else if (retries >= maxRetries) {
+                            clearInterval(checkLiff);
+                            reject(new Error('LIFF SDK failed to load'));
+                        }
+                    }, 300);
+                });
+            };
+            
+            try {
+                showDebug('รอ LIFF SDK โหลด...');
+                await waitForLiff();
+                showDebug('✅ LIFF SDK โหลดสำเร็จ');
+            } catch (error) {
+                showDebug('❌ LIFF SDK ไม่พร้อมใช้งาน');
+                showMessage('error', '⚠️ กรุณาเปิดไฟล์บน HTTPS Server');
+                return;
+            }
+            
+            try {
+                showDebug('กำลังเริ่มต้น LIFF...');
+                await liff.init({ liffId: CONFIG.LIFF_ID });
+                showDebug('✅ LIFF เริ่มต้นสำเร็จ');
+                
+                if (!liff.isInClient()) {
+                    showDebug('⚠️ กรุณาเปิดในแอพ LINE');
+                    showMessage('error', '⚠️ กรุณาเปิดในแอพ LINE เพื่อใช้งาน');
+                    return;
+                }
+                
+                isLiffReady = true;
+                showDebug('✅ เปิดใน LINE App แล้ว');
+                
+                const profile = await liff.getProfile();
+                userProfile = profile;
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('userName').textContent = profile.displayName;
+                document.getElementById('userPicture').src = profile.pictureUrl;
+                document.getElementById('customerName').value = profile.displayName;
+                showDebug(`✅ โหลดโปรไฟล์: ${profile.displayName}`);
+                
+            } catch (error) {
+                console.error('LIFF Error:', error);
+                showDebug(`❌ LIFF Error: ${error.message}`);
+                showMessage('error', '❌ เกิดข้อผิดพลาดในการเชื่อมต่อ LINE');
+            }
+        });
+        
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'timeError'].forEach(clearError);
+            
+            const route = document.querySelector('input[name="route"]:checked').value;
+            const travelDate = datePicker.value;
+            const selectedTime = document.getElementById('selectedTime').value;
+            const airline = document.getElementById('airline').value.trim();
+            const flightTime = document.getElementById('flightTime').value;
+            const customerName = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
+            
+            let hasError = false;
