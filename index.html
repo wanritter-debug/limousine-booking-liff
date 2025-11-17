@@ -969,6 +969,9 @@
         renderTimeSlots('pattani-airport');
         renderReturnTimeSlots('airport-pattani');
         
+        // เรียกใช้ฟังก์ชันทันทีเมื่อโหลดหน้าเพื่อตั้งค่าเริ่มต้น
+        selectTripType('oneway');
+        
         window.addEventListener('load', async () => {
             let retries = 0;
             const maxRetries = 10;
