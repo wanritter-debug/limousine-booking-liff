@@ -53,13 +53,14 @@
             display: inline-flex; 
             align-items: center; 
             gap: 8px; 
-            background: rgba(255,193,7,0.9); 
-            color: #1b5e20;
+            background: rgba(255,255,255,0.25);
+            color: white;
             padding: 12px 20px; 
             border-radius: 25px; 
             margin-top: 15px; 
             font-size: 18px;
             font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.4);
         }
         .user-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; }
         .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; }
@@ -236,14 +237,228 @@
             font-size: 12px; 
             display: none; 
         }
+        
+        .terms-overlay {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .terms-modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .terms-header {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .terms-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .terms-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+        
+        .terms-header h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .terms-header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        .terms-content {
+            padding: 30px 25px;
+        }
+        
+        .terms-section {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .terms-section h3 {
+            color: #e65100;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .terms-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .terms-section li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(230, 81, 0, 0.1);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .terms-section li:last-child {
+            border-bottom: none;
+        }
+        
+        .terms-section li strong {
+            color: #d32f2f;
+        }
+        
+        .terms-cancel {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 4px solid #f44336;
+        }
+        
+        .terms-cancel h3 {
+            color: #c62828;
+        }
+        
+        .terms-cancel li {
+            border-bottom-color: rgba(198, 40, 40, 0.1);
+        }
+        
+        .terms-footer {
+            text-align: center;
+            padding: 0 25px 25px;
+        }
+        
+        .terms-note {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .terms-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .terms-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .terms-btn-accept {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+        }
+        
+        .terms-btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
+        }
+        
+        .terms-btn-decline {
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .terms-btn-decline:hover {
+            background: #e0e0e0;
+        }
+        
         @media (max-width: 600px) { 
             body { padding: 10px; }
             .route-selector { flex-direction: column; }
+            .terms-modal { max-height: 95vh; }
+            .terms-content { padding: 20px 15px; }
+            .terms-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="terms-overlay" id="termsOverlay">
+        <div class="terms-modal">
+            <div class="terms-header">
+                <div class="terms-logo">
+                    <img src="https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/main/logo.png" 
+                         alt="Al Hijrah & Travel"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🚐%3C/text%3E%3C/svg%3E'">
+                </div>
+                <h2>เงื่อนไขการจองรถตู้ลีโมซีน</h2>
+                <p>ไป-กลับ ปัตตานี-สนามบินหาดใหญ่</p>
+            </div>
+            
+            <div class="terms-content">
+                <div class="terms-section">
+                    <h3>📋 เงื่อนไขการจองรถตู้ลีโมซีน</h3>
+                    <ul>
+                        <li><strong>1.</strong> ต้องทำการ<strong>จองล่วงหน้าอย่างน้อย 1 วันก่อนเดินทาง พร้อมชำระค่าโดยสาร</strong></li>
+                        <li><strong>2.</strong> กรณีจองล่วงหน้าหลายวัน กรุณา<strong>ชำระค่าโดยสารอย่างน้อย 1 วันก่อนวันเดินทาง</strong> เพื่อให้การจองเสร็จสมบูรณ์</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section terms-cancel">
+                    <h3>❌ เงื่อนไขการยกเลิกและคืนเงิน</h3>
+                    <ul>
+                        <li><strong>1.</strong> สามารถ<strong>ยกเลิกได้ล่วงหน้า 1 วันก่อนเดินทาง</strong> เพื่อรับเงินคืน หรือสามารถ<strong>เก็บสิทธิ์ที่นั่งไว้ใช้ภายใน 15 วัน</strong></li>
+                        <li><strong>2.</strong> ในกรณี<strong>เที่ยวบินดีเลย์</strong> สามารถขึ้นรถรอบถัดไป หรือ<strong>เก็บสิทธิ์ที่นั่งไว้ใช้ภายใน 15 วัน</strong> หากไม่สามารถใช้สิทธิ์ภายในระยะเวลาที่กำหนด บริษัทขอสงวนสิทธิ์ไม่คืนเงิน เนื่องจากกระทบต่อสิทธิ์ของลูกค้าท่านอื่น</li>
+                        <li><strong>3.</strong> ในกรณี<strong>ยกเลิกในวันเดินทาง</strong> หรือก่อนเวลาเดินทาง บริษัทขอ<strong>สงวนสิทธิ์ไม่คืนเงินทุกกรณี</strong> เนื่องจากเป็นการเสียสิทธิ์สำรองที่นั่งของลูกค้าท่านอื่น</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-note">
+                    <p>🙏 ขอบคุณที่เลือกใช้บริการอัลฮิจญ์เราะฮฺนะคะ</p>
+                </div>
+            </div>
+            
+            <div class="terms-footer">
+                <div class="terms-buttons">
+                    <button class="terms-btn terms-btn-decline" onclick="declineTerms()">ปิด</button>
+                    <button class="terms-btn terms-btn-accept" onclick="acceptTerms()">ยอมรับ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id="mainContainer" style="display: none;">
         <div class="header">
             <div class="company-logo">
                 <img id="logoImage" 
@@ -301,13 +516,13 @@
             <div class="section">
                 <div class="section-title">🚐 เลือกเส้นทาง</div>
                 <div class="route-selector">
-                    <div class="route-option active" onclick="selectRoute('airport-pattani')">
-                        <input type="radio" id="airport-pattani" name="route" value="🛬 สนามบิน → ปัตตานี" checked>
-                        <label for="airport-pattani">🛬 สนามบิน → ปัตตานี</label>
-                    </div>
-                    <div class="route-option" onclick="selectRoute('pattani-airport')">
-                        <input type="radio" id="pattani-airport" name="route" value="ปัตตานี → สนามบิน 🛫">
+                    <div class="route-option active" onclick="selectRoute('pattani-airport')">
+                        <input type="radio" id="pattani-airport" name="route" value="ปัตตานี → สนามบิน 🛫" checked>
                         <label for="pattani-airport">ปัตตานี → สนามบิน 🛫</label>
+                    </div>
+                    <div class="route-option" onclick="selectRoute('airport-pattani')">
+                        <input type="radio" id="airport-pattani" name="route" value="🛬 สนามบิน → ปัตตานี">
+                        <label for="airport-pattani">🛬 สนามบิน → ปัตตานี</label>
                     </div>
                 </div>
             </div>
@@ -320,6 +535,16 @@
             </div>
 
             <div class="section">
+                <div class="section-title" id="locationTitle">📍 จุดรับ</div>
+                <div class="input-group" id="locationGroup">
+                    <label id="locationLabel">จุดรับ (ในพื้นที่ปัตตานี)</label>
+                    <textarea id="location" rows="3" placeholder="ระบุที่อยู่หรือจุดรับในปัตตานี"></textarea>
+                    <small>ระบุที่อยู่หรือสถานที่ให้ชัดเจน</small>
+                    <small class="error">กรุณาระบุจุดรับ/ส่ง</small>
+                </div>
+            </div>
+
+            <div class="section">
                 <div class="section-title">✈️ ข้อมูลเที่ยวบิน</div>
                 <div class="input-group">
                     <label>สายการบิน</label>
@@ -327,9 +552,9 @@
                     <small>ระบุสายการบินที่คุณจะเดินทาง</small>
                 </div>
                 <div class="input-group">
-                    <label id="flightTimeLabel">เวลาลงเครื่อง</label>
+                    <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
                     <input type="time" id="flightTime">
-                    <small id="flightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
+                    <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
                 </div>
             </div>
 
@@ -340,16 +565,6 @@
                     <input type="tel" id="phone" placeholder="08X-XXX-XXXX">
                     <small>เพื่อติดต่อยืนยันการจอง</small>
                     <small class="error">กรุณากรอกเบอร์โทรศัพท์</small>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title" id="locationTitle">📍 จุดส่ง</div>
-                <div class="input-group" id="locationGroup">
-                    <label id="locationLabel">จุดส่ง (ในพื้นที่ปัตตานี)</label>
-                    <textarea id="location" rows="3" placeholder="ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี"></textarea>
-                    <small>ระบุที่อยู่หรือสถานที่ให้ชัดเจน</small>
-                    <small class="error">กรุณาระบุจุดรับ/ส่ง</small>
                 </div>
             </div>
 
@@ -366,7 +581,7 @@
                 </div>
             </div>
 
-            <button class="submit-btn" type="button" id="submitBtn">จองรถตู้</button>
+            <button class="submit-btn" type="button" id="submitBtn">เช็คที่นั่ง</button>
             <p class="footer-note">💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองค่ะ</p>
         </div>
     </div>
@@ -394,6 +609,21 @@
         
         let userProfile = null;
         let isLiffReady = false;
+        let termsAccepted = false;
+        
+        function acceptTerms() {
+            termsAccepted = true;
+            document.getElementById('termsOverlay').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+        }
+        
+        function declineTerms() {
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                liff.closeWindow();
+            } else {
+                alert('กรุณายอมรับเงื่อนไขเพื่อดำเนินการจองค่ะ');
+            }
+        }
         
         function showDebug(message) {
             const debugEl = document.getElementById('debugInfo');
@@ -500,18 +730,18 @@
             const locationLabel = document.getElementById('locationLabel');
             const locationTitle = document.getElementById('locationTitle');
             
-            if (routeId === 'airport-pattani') {
-                flightTimeLabel.textContent = 'เวลาลงเครื่อง';
-                flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
-                locationLabel.textContent = 'จุดส่ง (ในพื้นที่ปัตตานี)';
-                locationTitle.textContent = '📍 จุดส่ง';
-                document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
-            } else {
+            if (routeId === 'pattani-airport') {
                 flightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
                 flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
                 locationLabel.textContent = 'จุดรับ (ในพื้นที่ปัตตานี)';
                 locationTitle.textContent = '📍 จุดรับ';
                 document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+            } else {
+                flightTimeLabel.textContent = 'เวลาลงเครื่อง';
+                flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
+                locationLabel.textContent = 'จุดส่ง (ในพื้นที่ปัตตานี)';
+                locationTitle.textContent = '📍 จุดส่ง';
+                document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
             }
             
             renderTimeSlots(routeId);
@@ -559,7 +789,7 @@
             updateTotalPrice();
         });
         
-        renderTimeSlots('airport-pattani');
+        renderTimeSlots('pattani-airport');
         
         window.addEventListener('load', async () => {
             let retries = 0;
