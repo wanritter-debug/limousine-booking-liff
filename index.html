@@ -238,6 +238,30 @@
             display: none; 
         }
         
+        .trip-divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .trip-divider hr {
+            flex: 1;
+            border: none;
+            border-top: 2px dashed #2e7d32;
+        }
+        .trip-divider span {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .return-section {
+            display: none;
+        }
+        
         .terms-overlay {
             display: flex;
             position: fixed;
@@ -503,8 +527,9 @@
                 </div>
             </div>
 
+            <!-- ขาไป -->
             <div class="section">
-                <div class="section-title">📅 วันที่เดินทาง</div>
+                <div class="section-title">📅 วันที่เดินทาง (ขาไป)</div>
                 <div class="input-group" id="dateGroup">
                     <label>กรุณาเลือกวันที่</label>
                     <input type="date" id="travelDate">
@@ -513,7 +538,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">🚐 เลือกเส้นทาง</div>
+                <div class="section-title">🚐 เลือกเส้นทาง (ขาไป)</div>
                 <div class="route-selector">
                     <div class="route-option active" onclick="selectRoute('pattani-airport')">
                         <input type="radio" id="pattani-airport" name="route" value="ปัตตานี → สนามบิน 🛫" checked>
@@ -527,7 +552,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">🕐 เลือกรอบเดินทาง</div>
+                <div class="section-title">🕐 เลือกรอบเดินทาง (ขาไป)</div>
                 <div id="timeSlotContainer"></div>
                 <input type="hidden" id="selectedTime">
                 <small class="error" id="timeError" style="display: none; margin-top: 10px;">กรุณาเลือกรอบเดินทาง</small>
@@ -542,7 +567,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">✈️ ข้อมูลเที่ยวบิน</div>
+                <div class="section-title">✈️ ข้อมูลเที่ยวบิน (ขาไป)</div>
                 <div class="input-group">
                     <label>สายการบิน</label>
                     <input type="text" id="airline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
@@ -552,6 +577,67 @@
                     <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
                     <input type="time" id="flightTime">
                     <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
+                </div>
+            </div>
+
+            <!-- ขากลับ -->
+            <div class="return-section" id="returnSection">
+                <div class="trip-divider">
+                    <hr>
+                    <span>🔄 ข้อมูลขากลับ</span>
+                    <hr>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📅 วันที่เดินทาง (ขากลับ)</div>
+                    <div class="input-group" id="returnDateGroup">
+                        <label>กรุณาเลือกวันที่</label>
+                        <input type="date" id="returnTravelDate">
+                        <small class="error">กรุณาเลือกวันที่กลับ</small>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🚐 เลือกเส้นทาง (ขากลับ)</div>
+                    <div class="route-selector">
+                        <div class="route-option" onclick="selectReturnRoute('return-pattani-airport')">
+                            <input type="radio" id="return-pattani-airport" name="returnRoute" value="ปัตตานี → สนามบิน 🛫">
+                            <label for="return-pattani-airport">ปัตตานี → สนามบิน 🛫</label>
+                        </div>
+                        <div class="route-option active" onclick="selectReturnRoute('return-airport-pattani')">
+                            <input type="radio" id="return-airport-pattani" name="returnRoute" value="🛬 สนามบิน → ปัตตานี" checked>
+                            <label for="return-airport-pattani">🛬 สนามบิน → ปัตตานี</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🕐 เลือกรอบเดินทาง (ขากลับ)</div>
+                    <div id="returnTimeSlotContainer"></div>
+                    <input type="hidden" id="returnSelectedTime">
+                    <small class="error" id="returnTimeError" style="display: none; margin-top: 10px;">กรุณาเลือกรอบเดินทางขากลับ</small>
+                </div>
+
+                <div class="section">
+                    <div class="section-title" id="returnLocationTitle">📍 จุดส่ง</div>
+                    <div class="input-group" id="returnLocationGroup">
+                        <textarea id="returnLocation" rows="3" placeholder="ระบุที่อยู่หรือจุดส่งในปัตตานี"></textarea>
+                        <small class="error">กรุณาระบุจุดส่ง</small>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✈️ ข้อมูลเที่ยวบิน (ขากลับ)</div>
+                    <div class="input-group">
+                        <label>สายการบิน</label>
+                        <input type="text" id="returnAirline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
+                        <small>ระบุสายการบินที่คุณจะเดินทาง</small>
+                    </div>
+                    <div class="input-group">
+                        <label id="returnFlightTimeLabel">เวลาลงเครื่อง</label>
+                        <input type="time" id="returnFlightTime">
+                        <small id="returnFlightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
+                    </div>
                 </div>
             </div>
 
@@ -647,16 +733,16 @@
                 el.classList.add('has-error');
                 const errorEl = el.querySelector('.error');
                 if (errorEl && message) errorEl.textContent = message;
-            } else if (groupId === 'timeError') {
-                document.getElementById('timeError').style.display = 'block';
+            } else if (groupId === 'timeError' || groupId === 'returnTimeError') {
+                document.getElementById(groupId).style.display = 'block';
             }
         }
         
         function clearError(groupId) {
             const el = document.getElementById(groupId);
             if (el) el.classList.remove('has-error');
-            if (groupId === 'timeError') {
-                document.getElementById('timeError').style.display = 'none';
+            if (groupId === 'timeError' || groupId === 'returnTimeError') {
+                document.getElementById(groupId).style.display = 'none';
             }
         }
         
@@ -706,11 +792,23 @@
             document.querySelector(`[onclick="selectTripType('${type}')"]`).classList.add('active');
             document.getElementById(type).checked = true;
             
+            const returnSection = document.getElementById('returnSection');
             const seatInput = document.getElementById('seatCount');
+            
             if (type === 'roundtrip') {
+                returnSection.style.display = 'block';
                 seatInput.value = 2;
                 seatInput.min = 2;
+                
+                // ตั้งค่าเริ่มต้นสำหรับขากลับ
+                const outboundRoute = document.querySelector('input[name="route"]:checked').value;
+                if (outboundRoute.includes('ปัตตานี → สนามบิน')) {
+                    selectReturnRoute('return-airport-pattani');
+                } else {
+                    selectReturnRoute('return-pattani-airport');
+                }
             } else {
+                returnSection.style.display = 'none';
                 seatInput.value = 1;
                 seatInput.min = 1;
             }
@@ -724,13 +822,11 @@
             
             const flightTimeLabel = document.getElementById('flightTimeLabel');
             const flightTimeHint = document.getElementById('flightTimeHint');
-            const locationLabel = document.getElementById('locationLabel');
             const locationTitle = document.getElementById('locationTitle');
             
             if (routeId === 'pattani-airport') {
                 flightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
                 flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
-                locationLabel.textContent = 'จุดรับ (ในพื้นที่ปัตตานี)';
                 locationTitle.textContent = '📍 จุดรับ';
                 document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
             } else {
@@ -742,6 +838,43 @@
             
             renderTimeSlots(routeId);
             document.getElementById('selectedTime').value = '';
+            
+            // อัพเดทเส้นทางขากลับอัตโนมัติ
+            const tripType = document.querySelector('input[name="tripType"]:checked').value;
+            if (tripType === 'ไป-กลับ') {
+                if (routeId === 'pattani-airport') {
+                    selectReturnRoute('return-airport-pattani');
+                } else {
+                    selectReturnRoute('return-pattani-airport');
+                }
+            }
+        }
+        
+        function selectReturnRoute(routeId) {
+            document.querySelectorAll('#returnSection .route-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelector(`[onclick="selectReturnRoute('${routeId}')"]`).classList.add('active');
+            document.getElementById(routeId).checked = true;
+            
+            const returnFlightTimeLabel = document.getElementById('returnFlightTimeLabel');
+            const returnFlightTimeHint = document.getElementById('returnFlightTimeHint');
+            const returnLocationTitle = document.getElementById('returnLocationTitle');
+            
+            const actualRoute = routeId.replace('return-', '');
+            
+            if (actualRoute === 'pattani-airport') {
+                returnFlightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
+                returnFlightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
+                returnLocationTitle.textContent = '📍 จุดรับ';
+                document.getElementById('returnLocation').placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+            } else {
+                returnFlightTimeLabel.textContent = 'เวลาลงเครื่อง';
+                returnFlightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
+                returnLocationTitle.textContent = '📍 จุดส่ง';
+                document.getElementById('returnLocation').placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
+            }
+            
+            renderReturnTimeSlots(actualRoute);
+            document.getElementById('returnSelectedTime').value = '';
         }
         
         function renderTimeSlots(route) {
@@ -756,11 +889,30 @@
             `).join('') + '</div>';
         }
         
+        function renderReturnTimeSlots(route) {
+            const container = document.getElementById('returnTimeSlotContainer');
+            const slots = TIME_SLOTS[route];
+            
+            container.innerHTML = '<div class="time-slots">' + slots.map(time => `
+                <div class="time-slot" onclick="selectReturnTimeSlot('${time}')">
+                    <input type="radio" name="returnTimeSlot" value="${time}" id="return-time-${time}">
+                    <label for="return-time-${time}">${time} น.</label>
+                </div>
+            `).join('') + '</div>';
+        }
+        
         function selectTimeSlot(time) {
-            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('active'));
+            document.querySelectorAll('#timeSlotContainer .time-slot').forEach(slot => slot.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.getElementById('selectedTime').value = time;
             clearError('timeError');
+        }
+        
+        function selectReturnTimeSlot(time) {
+            document.querySelectorAll('#returnTimeSlotContainer .time-slot').forEach(slot => slot.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('returnSelectedTime').value = time;
+            clearError('returnTimeError');
         }
         
         function updateTotalPrice() {
@@ -770,11 +922,22 @@
         }
         
         const datePicker = document.getElementById('travelDate');
+        const returnDatePicker = document.getElementById('returnTravelDate');
         const minDate = getTodayDate();
         datePicker.min = minDate;
         datePicker.value = minDate;
+        returnDatePicker.min = minDate;
         
-        datePicker.addEventListener('change', () => clearError('dateGroup'));
+        datePicker.addEventListener('change', () => {
+            clearError('dateGroup');
+            // อัพเดทวันที่กลับให้เป็นหลังวันที่ไป
+            returnDatePicker.min = datePicker.value;
+            if (returnDatePicker.value && returnDatePicker.value < datePicker.value) {
+                returnDatePicker.value = datePicker.value;
+            }
+        });
+        
+        returnDatePicker.addEventListener('change', () => clearError('returnDateGroup'));
         
         document.getElementById('seatCount').addEventListener('input', function() {
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
@@ -786,6 +949,7 @@
         });
         
         renderTimeSlots('pattani-airport');
+        renderReturnTimeSlots('airport-pattani');
         
         window.addEventListener('load', async () => {
             let retries = 0;
@@ -879,6 +1043,46 @@
                 hasError = true;
             }
             
+            // ตรวจสอบข้อมูลขากลับ (ถ้าเลือกไป-กลับ)
+            let returnData = null;
+            if (tripType === 'ไป-กลับ') {
+                ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
+                
+                const returnTravelDate = returnDatePicker.value;
+                const returnRoute = document.querySelector('input[name="returnRoute"]:checked').value;
+                const returnSelectedTime = document.getElementById('returnSelectedTime').value;
+                const returnAirline = document.getElementById('returnAirline').value.trim();
+                const returnFlightTime = document.getElementById('returnFlightTime').value;
+                const returnLocation = document.getElementById('returnLocation').value.trim();
+                
+                if (!returnTravelDate) {
+                    showError('returnDateGroup', 'กรุณาเลือกวันที่กลับ');
+                    hasError = true;
+                }
+                
+                if (!returnSelectedTime) {
+                    showError('returnTimeError');
+                    hasError = true;
+                }
+                
+                if (!returnLocation) {
+                    showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
+                    hasError = true;
+                }
+                
+                if (!hasError) {
+                    returnData = {
+                        route: returnRoute,
+                        travelDate: formatDateThai(returnTravelDate),
+                        travelDateRaw: returnTravelDate,
+                        departureTime: returnSelectedTime,
+                        airline: returnAirline || 'ไม่ระบุ',
+                        flightTime: returnFlightTime || 'ไม่ระบุ',
+                        location: returnLocation
+                    };
+                }
+            }
+            
             if (hasError) {
                 showMessage('error', '⚠️ กรุณาตรวจสอบข้อมูลที่กรอก');
                 return;
@@ -909,7 +1113,8 @@
                 totalPrice,
                 userId: userProfile.userId,
                 userName: userProfile.displayName,
-                timestamp: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })
+                timestamp: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+                returnData: returnData
             };
             
             showLoading(true);
@@ -931,6 +1136,7 @@
                     
                     let msg = `✅ รับคำขอจองรถตู้ลีโมซีนเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}`;
                     
+                    msg += `\n\n🛫 ============ ขาไป ============`;
                     msg += `\n🚐 เส้นทาง: ${route}`;
                     msg += `\n📅 วันที่: ${travelDateThai}`;
                     msg += `\n🕐 รอบเดินทาง: ${selectedTime} น.`;
@@ -944,13 +1150,32 @@
                         msg += `\n🕐 ${timeLabel}: ${flightTime} น.`;
                     }
                     
-                    msg += `\n\n👤 ชื่อผู้จอง: ${userProfile.displayName}`;
-                    msg += `\n📞 เบอร์โทร: ${phone}`;
-                    
                     const locationLabel = route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
                     msg += `\n📍 ${locationLabel}: ${location}`;
                     
-                    msg += `\n\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
+                    if (returnData) {
+                        msg += `\n\n🛬 =========== ขากลับ ===========`;
+                        msg += `\n🚐 เส้นทาง: ${returnData.route}`;
+                        msg += `\n📅 วันที่: ${returnData.travelDate}`;
+                        msg += `\n🕐 รอบเดินทาง: ${returnData.departureTime} น.`;
+                        
+                        if (returnData.airline && returnData.airline !== 'ไม่ระบุ') {
+                            msg += `\n✈️ สายการบิน: ${returnData.airline}`;
+                        }
+                        
+                        if (returnData.flightTime && returnData.flightTime !== 'ไม่ระบุ') {
+                            const timeLabel = returnData.route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+                            msg += `\n🕐 ${timeLabel}: ${returnData.flightTime} น.`;
+                        }
+                        
+                        const returnLocationLabel = returnData.route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
+                        msg += `\n📍 ${returnLocationLabel}: ${returnData.location}`;
+                    }
+                    
+                    msg += `\n\n━━━━━━━━━━━━━━━━`;
+                    msg += `\n👤 ชื่อผู้จอง: ${userProfile.displayName}`;
+                    msg += `\n📞 เบอร์โทร: ${phone}`;
+                    msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
                     msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
                     
                     msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
