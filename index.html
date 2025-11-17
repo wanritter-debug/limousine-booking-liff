@@ -469,7 +469,7 @@
                 </div>
                 
                 <div class="terms-note">
-                    <p>🙏 ขอบคุณที่เลือกใช้บริการอัลฮิจญ์เราะฮฺนะคะ</p>
+                    <p>📌 กรุณาอ่านและทำความเข้าใจเงื่อนไขก่อนทำการจอง</p>
                 </div>
             </div>
             
@@ -529,7 +529,7 @@
 
             <!-- ขาไป -->
             <div class="section">
-                <div class="section-title">📅 วันที่เดินทาง (ขาไป)</div>
+                <div class="section-title" id="outboundDateTitle">📅 วันที่เดินทาง (ขาไป)</div>
                 <div class="input-group" id="dateGroup">
                     <label>กรุณาเลือกวันที่</label>
                     <input type="date" id="travelDate">
@@ -538,7 +538,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">🚐 เลือกเส้นทาง (ขาไป)</div>
+                <div class="section-title" id="outboundRouteTitle">🚐 เลือกเส้นทาง (ขาไป)</div>
                 <div class="route-selector">
                     <div class="route-option active" onclick="selectRoute('pattani-airport')">
                         <input type="radio" id="pattani-airport" name="route" value="ปัตตานี → สนามบิน 🛫" checked>
@@ -552,7 +552,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">🕐 เลือกรอบเดินทาง (ขาไป)</div>
+                <div class="section-title" id="outboundTimeTitle">🕐 เลือกรอบเดินทาง (ขาไป)</div>
                 <div id="timeSlotContainer"></div>
                 <input type="hidden" id="selectedTime">
                 <small class="error" id="timeError" style="display: none; margin-top: 10px;">กรุณาเลือกรอบเดินทาง</small>
@@ -567,7 +567,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">✈️ ข้อมูลเที่ยวบิน (ขาไป)</div>
+                <div class="section-title" id="outboundFlightTitle">✈️ ข้อมูลเที่ยวบิน (ขาไป)</div>
                 <div class="input-group">
                     <label>สายการบิน</label>
                     <input type="text" id="airline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
@@ -795,10 +795,22 @@
             const returnSection = document.getElementById('returnSection');
             const seatInput = document.getElementById('seatCount');
             
+            // อัพเดทชื่อหัวข้อตามประเภทการจอง
+            const outboundDateTitle = document.getElementById('outboundDateTitle');
+            const outboundRouteTitle = document.getElementById('outboundRouteTitle');
+            const outboundTimeTitle = document.getElementById('outboundTimeTitle');
+            const outboundFlightTitle = document.getElementById('outboundFlightTitle');
+            
             if (type === 'roundtrip') {
                 returnSection.style.display = 'block';
                 seatInput.value = 2;
                 seatInput.min = 2;
+                
+                // แสดงคำว่า "(ขาไป)"
+                outboundDateTitle.textContent = '📅 วันที่เดินทาง (ขาไป)';
+                outboundRouteTitle.textContent = '🚐 เลือกเส้นทาง (ขาไป)';
+                outboundTimeTitle.textContent = '🕐 เลือกรอบเดินทาง (ขาไป)';
+                outboundFlightTitle.textContent = '✈️ ข้อมูลเที่ยวบิน (ขาไป)';
                 
                 // ตั้งค่าเริ่มต้นสำหรับขากลับ
                 const outboundRoute = document.querySelector('input[name="route"]:checked').value;
@@ -811,6 +823,12 @@
                 returnSection.style.display = 'none';
                 seatInput.value = 1;
                 seatInput.min = 1;
+                
+                // ซ่อนคำว่า "(ขาไป)"
+                outboundDateTitle.textContent = '📅 วันที่เดินทาง';
+                outboundRouteTitle.textContent = '🚐 เลือกเส้นทาง';
+                outboundTimeTitle.textContent = '🕐 เลือกรอบเดินทาง';
+                outboundFlightTitle.textContent = '✈️ ข้อมูลเที่ยวบิน';
             }
             updateTotalPrice();
         }
