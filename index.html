@@ -303,13 +303,23 @@
         }
         
         .terms-logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    width: 80px;          /* ←← เปลี่ยนจาก 60px เป็น 80px */
+    height: 80px;         /* ←← เปลี่ยนจาก 60px เป็น 80px */
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.terms-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;  /* ←← เพิ่มบรรทัดนี้ (ตามหน้าหลัก) */
+    display: block;           /* ←← เพิ่มบรรทัดนี้ (ตามหน้าหลัก) */
+    /* ลบ border-radius: 50%; ออก หากต้องการให้เป็นรูปสี่เหลี่ยมเหมือนหน้าหลัก */
+    /* ลบ border: 3px solid white; ออก หากไม่ต้องการขอบ */
+}
         
         .terms-logo img {
             width: 100%;
