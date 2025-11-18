@@ -754,11 +754,27 @@
         }
         
         function getTodayDate() {
-            const d = new Date();
-            d.setDate(d.getDate() + 1);
-            return d.toISOString().split('T')[0];
-        }
-        
+    const d = new Date();
+    // d.setDate(d.getDate() + 1);  // ←← ลบหรือ comment บรรทัดนี้ออก
+    return d.toISOString().split('T')[0];
+}
+     function isTimeSlotAvailable(time, selectedDate) {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    
+    // ถ้าเลือกวันที่ในอนาคต ให้เลือกได้ทุกรอบ
+    if (selectedDate > today) {
+        return true;
+    }
+    
+    // ถ้าเลือกวันนี้ ต้องเช็คว่าเวลายังไม่ผ่านไปหรือไม่
+    if (selectedDate === today) {
+        const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        return time > currentTime;
+    }
+    
+    return false;
+}   
         function formatDateThai(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
@@ -898,28 +914,40 @@
         }
         
         function renderTimeSlots(route) {
-            const container = document.getElementById('timeSlotContainer');
-            const slots = TIME_SLOTS[route];
-            
-            container.innerHTML = '<div class="time-slots">' + slots.map(time => `
-                <div class="time-slot" onclick="selectTimeSlot('${time}')">
-                    <input type="radio" name="timeSlot" value="${time}" id="time-${time}">
-                    <label for="time-${time}">${time} น.</label>
-                </div>
-            `).join('') + '</div>';
-        }
+    const container = document.getElementById('timeSlotContainer');
+    const slots = TIME_SLOTS[route];
+    const selectedDate = document.getElementById('travelDate').value;
+    
+    container.innerHTML = '<div class="time-slots">' + slots.map(time => {
+        const available = isTimeSlotAvailable(time, selectedDate);
+        const disabledClass = available ? '' : 'disabled';
+        const onclickAttr = available ? `onclick="selectTimeSlot('${time}')"` : '';
+        
+        return `
+        <div class="time-slot ${disabledClass}" ${onclickAttr}>
+            <input type="radio" name="timeSlot" value="${time}" id="time-${time}" ${available ? '' : 'disabled'}>
+            <label for="time-${time}">${time} น.</label>
+        </div>`;
+    }).join('') + '</div>';
+}
         
         function renderReturnTimeSlots(route) {
-            const container = document.getElementById('returnTimeSlotContainer');
-            const slots = TIME_SLOTS[route];
-            
-            container.innerHTML = '<div class="time-slots">' + slots.map(time => `
-                <div class="time-slot" onclick="selectReturnTimeSlot('${time}')">
-                    <input type="radio" name="returnTimeSlot" value="${time}" id="return-time-${time}">
-                    <label for="return-time-${time}">${time} น.</label>
-                </div>
-            `).join('') + '</div>';
-        }
+    const container = document.getElementById('returnTimeSlotContainer');
+    const slots = TIME_SLOTS[route];
+    const selectedDate = document.getElementById('returnTravelDate').value;
+    
+    container.innerHTML = '<div class="time-slots">' + slots.map(time => {
+        const available = isTimeSlotAvailable(time, selectedDate);
+        const disabledClass = available ? '' : 'disabled';
+        const onclickAttr = available ? `onclick="selectReturnTimeSlot('${time}')"` : '';
+        
+        return `
+        <div class="time-slot ${disabledClass}" ${onclickAttr}>
+            <input type="radio" name="returnTimeSlot" value="${time}" id="return-time-${time}" ${available ? '' : 'disabled'}>
+            <label for="return-time-${time}">${time} น.</label>
+        </div>`;
+    }).join('') + '</div>';
+}
         
         function selectTimeSlot(time) {
             document.querySelectorAll('#timeSlotContainer .time-slot').forEach(slot => slot.classList.remove('active'));
@@ -949,14 +977,27 @@
         returnDatePicker.min = minDate;
         
         datePicker.addEventListener('change', () => {
-            clearError('dateGroup');
-            returnDatePicker.min = datePicker.value;
-            if (returnDatePicker.value && returnDatePicker.value < datePicker.value) {
-                returnDatePicker.value = datePicker.value;
-            }
-        });
-        
-        returnDatePicker.addEventListener('change', () => clearError('returnDateGroup'));
+    clearError('dateGroup');
+    returnDatePicker.min = datePicker.value;
+    if (returnDatePicker.value && returnDatePicker.value < datePicker.value) {
+        returnDatePicker.value = datePicker.value;
+    }
+    // รีเรนเดอร์ time slots เมื่อเปลี่ยนวันที่
+    const currentRoute = document.querySelector('input[name="route"]:checked').id;
+    renderTimeSlots(currentRoute);
+    document.getElementById('selectedTime').value = '';
+});
+
+returnDatePicker.addEventListener('change', () => {
+    clearError('returnDateGroup');
+    // รีเรนเดอร์ time slots ขากลับเมื่อเปลี่ยนวันที่
+    const returnRoute = document.querySelector('input[name="returnRoute"]:checked');
+    if (returnRoute) {
+        const actualRoute = returnRoute.id.replace('return-', '');
+        renderReturnTimeSlots(actualRoute);
+        document.getElementById('returnSelectedTime').value = '';
+    }
+});
         
         document.getElementById('seatCount').addEventListener('input', function() {
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
