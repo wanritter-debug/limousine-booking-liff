@@ -151,11 +151,19 @@
             transition: all 0.3s;
             background: white;
         }
-        .time-slot:hover { border-color: #2e7d32; }
+        .time-slot:hover:not(.disabled) { border-color: #2e7d32; }
         .time-slot.active { 
             border-color: #2e7d32; 
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
             font-weight: bold;
+        }
+        .time-slot.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+        .time-slot.disabled label {
+            color: #999;
         }
         .time-slot input[type="radio"] { display: none; }
         .submit-btn { 
@@ -510,7 +518,8 @@
             
             <div class="info-box">
                 <p>⏱️ ใช้เวลาเดินทางประมาณ 2 ชั่วโมง</p>
-                <p>📋 จองล่วงหน้าอย่างน้อย 1 วันก่อนเดินทาง</p>
+                <p>📋 จองล่วงหน้าอย่างน้อย 1 วันก่อนเดินทาง เพื่อความแน่นอน</p>
+                <p>✨ หรือจองได้ทันที หากยังไม่ถึงเวลารอบเดินทาง</p>
             </div>
 
             <div class="section">
@@ -527,7 +536,6 @@
                 </div>
             </div>
 
-            <!-- ขาไป -->
             <div class="section">
                 <div class="section-title" id="outboundDateTitle">📅 วันที่เดินทาง</div>
                 <div class="input-group" id="dateGroup">
@@ -580,7 +588,6 @@
                 </div>
             </div>
 
-            <!-- ขากลับ -->
             <div class="return-section" id="returnSection">
                 <div class="trip-divider">
                     <hr>
@@ -795,7 +802,6 @@
             const returnSection = document.getElementById('returnSection');
             const seatInput = document.getElementById('seatCount');
             
-            // อัพเดทชื่อหัวข้อตามประเภทการจอง
             const outboundDateTitle = document.getElementById('outboundDateTitle');
             const outboundRouteTitle = document.getElementById('outboundRouteTitle');
             const outboundTimeTitle = document.getElementById('outboundTimeTitle');
@@ -806,13 +812,11 @@
                 seatInput.value = 2;
                 seatInput.min = 2;
                 
-                // แสดงคำว่า "(ขาไป)"
                 outboundDateTitle.textContent = '📅 วันที่เดินทาง (ขาไป)';
                 outboundRouteTitle.textContent = '🚐 เลือกเส้นทาง (ขาไป)';
                 outboundTimeTitle.textContent = '🕐 เลือกรอบเดินทาง (ขาไป)';
                 outboundFlightTitle.textContent = '✈️ ข้อมูลเที่ยวบิน (ขาไป)';
                 
-                // ตั้งค่าเริ่มต้นสำหรับขากลับ
                 const outboundRoute = document.querySelector('input[name="route"]:checked').value;
                 if (outboundRoute.includes('ปัตตานี → สนามบิน')) {
                     selectReturnRoute('return-airport-pattani');
@@ -824,7 +828,6 @@
                 seatInput.value = 1;
                 seatInput.min = 1;
                 
-                // ซ่อนคำว่า "(ขาไป)"
                 outboundDateTitle.textContent = '📅 วันที่เดินทาง';
                 outboundRouteTitle.textContent = '🚐 เลือกเส้นทาง';
                 outboundTimeTitle.textContent = '🕐 เลือกรอบเดินทาง';
@@ -857,7 +860,6 @@
             renderTimeSlots(routeId);
             document.getElementById('selectedTime').value = '';
             
-            // อัพเดทเส้นทางขากลับอัตโนมัติ
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
             if (tripType === 'ไป-กลับ') {
                 if (routeId === 'pattani-airport') {
@@ -948,7 +950,6 @@
         
         datePicker.addEventListener('change', () => {
             clearError('dateGroup');
-            // อัพเดทวันที่กลับให้เป็นหลังวันที่ไป
             returnDatePicker.min = datePicker.value;
             if (returnDatePicker.value && returnDatePicker.value < datePicker.value) {
                 returnDatePicker.value = datePicker.value;
@@ -968,8 +969,6 @@
         
         renderTimeSlots('pattani-airport');
         renderReturnTimeSlots('airport-pattani');
-        
-        // เรียกใช้ฟังก์ชันทันทีเมื่อโหลดหน้าเพื่อตั้งค่าเริ่มต้น
         selectTripType('oneway');
         
         window.addEventListener('load', async () => {
@@ -1064,7 +1063,6 @@
                 hasError = true;
             }
             
-            // ตรวจสอบข้อมูลขากลับ (ถ้าเลือกไป-กลับ)
             let returnData = null;
             if (tripType === 'ไป-กลับ') {
                 ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
@@ -1170,7 +1168,7 @@
                     }
                     
                     if (flightTime && flightTime !== 'ไม่ระบุ') {
-                        const timeLabel = route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+const timeLabel = route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
                         msg += `\n🕐 ${timeLabel}: ${flightTime} น.`;
                     }
                     
