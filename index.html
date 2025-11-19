@@ -656,14 +656,20 @@
             </div>
 
             <div class="section">
-                <div class="section-title">👤 ข้อมูลผู้จอง</div>
-                <div class="input-group" id="phoneGroup">
-                    <label>เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" placeholder="08X-XXX-XXXX">
-                    <small>เพื่อติดต่อยืนยันการจอง</small>
-                    <small class="error">กรุณากรอกเบอร์โทรศัพท์</small>
-                </div>
-            </div>
+    <div class="section-title">👤 ข้อมูลผู้จอง</div>
+    <div class="input-group" id="nameGroup">
+        <label>ชื่อ-นามสกุล</label>
+        <input type="text" id="customerName" placeholder="กรอกชื่อ-นามสกุล">
+        <small>ชื่อสำหรับการจอง</small>
+        <small class="error">กรุณากรอกชื่อ-นามสกุล</small>
+    </div>
+    <div class="input-group" id="phoneGroup">
+        <label>เบอร์โทรศัพท์</label>
+        <input type="tel" id="phone" placeholder="08X-XXX-XXXX">
+        <small>เพื่อติดต่อยืนยันการจอง</small>
+        <small class="error">กรุณากรอกเบอร์โทรศัพท์</small>
+    </div>
+</div>
 
             <div class="section">
                 <div class="section-title">💺 จำนวนที่นั่ง</div>
@@ -1077,7 +1083,7 @@ returnDatePicker.addEventListener('change', () => {
         });
         
         document.getElementById('submitBtn').addEventListener('click', async () => {
-            ['dateGroup', 'phoneGroup', 'locationGroup', 'timeError'].forEach(clearError);
+    ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'timeError'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
             const route = document.querySelector('input[name="route"]:checked').value;
@@ -1085,13 +1091,24 @@ returnDatePicker.addEventListener('change', () => {
             const selectedTime = document.getElementById('selectedTime').value;
             const airline = document.getElementById('airline').value.trim();
             const flightTime = document.getElementById('flightTime').value;
-            const phone = document.getElementById('phone').value.trim();
-            const location = document.getElementById('location').value.trim();
-            const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
-            
-            let hasError = false;
-            
-            if (!travelDate) {
+           const customerName = document.getElementById('customerName').value.trim();
+const phone = document.getElementById('phone').value.trim();
+const location = document.getElementById('location').value.trim();
+const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
+
+let hasError = false;
+
+if (!travelDate) {
+    showError('dateGroup', 'กรุณาเลือกวันที่');
+    hasError = true;
+}
+
+if (!customerName) {
+    showError('nameGroup', 'กรุณากรอกชื่อ-นามสกุล');
+    hasError = true;
+}
+
+if (!selectedTime) {
                 showError('dateGroup', 'กรุณาเลือกวันที่');
                 hasError = true;
             }
@@ -1165,16 +1182,16 @@ returnDatePicker.addEventListener('change', () => {
             const reqNum = `LIM${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
             
             const bookingData = {
-                requestNumber: reqNum,
-                tripType,
-                route,
-                travelDate: travelDateThai,
-                travelDateRaw: travelDate,
-                departureTime: selectedTime,
-                airline: airline || 'ไม่ระบุ',
-                flightTime: flightTime || 'ไม่ระบุ',
-                customerName: userProfile.displayName,
-                phone,
+    requestNumber: reqNum,
+    tripType,
+    route,
+    travelDate: travelDateThai,
+    travelDateRaw: travelDate,
+    departureTime: selectedTime,
+    airline: airline || 'ไม่ระบุ',
+    flightTime: flightTime || 'ไม่ระบุ',
+    customerName: customerName,
+    phone,
                 location,
                 seatCount,
                 totalPrice,
@@ -1243,7 +1260,7 @@ const timeLabel = route.includes('สนามบิน →') ? 'เวลาล
                     }
                     
                     msg += `\n\n━━━━━━━━━━━━━━━━`;
-                    msg += `\n📞 เบอร์โทร: ${phone}`;
+                    msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
                     msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
                     msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
                     
