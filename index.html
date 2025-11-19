@@ -664,11 +664,10 @@
         <small class="error">กรุณากรอกชื่อ-นามสกุล</small>
     </div>
     <div class="input-group" id="phoneGroup">
-        <label>เบอร์โทรศัพท์</label>
-        <input type="tel" id="phone" placeholder="08X-XXX-XXXX">
-        <small>เพื่อสะดวกในการติดต่อ</small>
-        <small class="error">กรุณากรอกเบอร์โทรศัพท์</small>
-    </div>
+    <label>เบอร์โทรศัพท์</label>
+    <input type="tel" id="phone" placeholder="08X-XXX-XXXX หรือ 08X-XXX-XXXX/09X-XXX-XXXX">
+    <small>สามารถใส่หลายเบอร์ได้ คั่นด้วย /</small>
+    <small class="error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</small>
 </div>
 
             <div class="section">
@@ -796,9 +795,21 @@
         }
         
         function validatePhone(phone) {
-            if (!phone) return false;
-            return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
-        }
+    if (!phone) return false;
+    
+    // ลบช่องว่างและขีดออก
+    const cleanPhone = phone.replace(/[-\s]/g, '');
+    
+    // ถ้ามีหลายเบอร์ (คั่นด้วย /)
+    if (cleanPhone.includes('/')) {
+        const phoneNumbers = cleanPhone.split('/');
+        // ตรวจสอบว่าทุกเบอร์ถูกต้อง
+        return phoneNumbers.every(num => /^0[0-9]{8,9}$/.test(num.trim()));
+    }
+    
+    // ถ้ามีเบอร์เดียว
+    return /^0[0-9]{8,9}$/.test(cleanPhone);
+}
         
         function handleLogoError(img) {
             console.log('❌ Logo load failed:', img.src);
@@ -1103,8 +1114,8 @@ if (!travelDate) {
     hasError = true;
 }
 
-if (!customerName) {
-    showError('nameGroup', 'กรุณากรอกชื่อ-นามสกุล');
+if (!customerName || customerName.trim().length === 0) {
+    showError('nameGroup', 'กรุณากรอกชื่อ');
     hasError = true;
 }
 
