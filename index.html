@@ -521,6 +521,14 @@
             .terms-content { padding: 20px 15px; }
             .terms-buttons { flex-direction: column; }
         }
+        /* บังคับให้ input time เป็น 24 ชั่วโมง - ซ่อน AM/PM */
+        input[type="time"]::-webkit-datetime-edit-ampm-field {
+            display: none;
+        }
+        
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5);
+        }
     </style>
 </head>
 <body>
