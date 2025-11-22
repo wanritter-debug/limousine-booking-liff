@@ -969,27 +969,38 @@
         }
         
         function getTodayDate() {
-    const d = new Date();
-    // d.setDate(d.getDate() + 1);  // ←← ลบหรือ comment บรรทัดนี้ออก
-    return d.toISOString().split('T')[0];
-}
+            const now = new Date();
+            const bangkokTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+            const year = bangkokTime.getFullYear();
+            const month = String(bangkokTime.getMonth() + 1).padStart(2, '0');
+            const day = String(bangkokTime.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
      function isTimeSlotAvailable(time, selectedDate) {
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    
-    // ถ้าเลือกวันที่ในอนาคต ให้เลือกได้ทุกรอบ
-    if (selectedDate > today) {
-        return true;
+        const now = new Date();
+        const bangkokTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+        const today = getTodayDate();
+        
+        // ถ้าเลือกวันในอนาคต = เลือกได้ทุกรอบ
+        if (selectedDate > today) {
+            return true;
+        }
+        
+        // ถ้าเลือกวันนี้ = เช็คเวลา + เผื่อ 30 นาที
+        if (selectedDate === today) {
+            const currentHour = bangkokTime.getHours();
+            const currentMinute = bangkokTime.getMinutes();
+            const currentTimeInMinutes = (currentHour * 60) + currentMinute + 30; // เผื่อ 30 นาที
+            
+            const [slotHour, slotMinute] = time.split(':').map(Number);
+            const slotTimeInMinutes = (slotHour * 60) + slotMinute;
+            
+            return slotTimeInMinutes > currentTimeInMinutes;
+        }
+        
+        // วันที่ผ่านไปแล้ว = ไม่ให้เลือก
+        return false;
     }
-    
-    // ถ้าเลือกวันนี้ ต้องเช็คว่าเวลายังไม่ผ่านไปหรือไม่
-    if (selectedDate === today) {
-        const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        return time > currentTime;
-    }
-    
-    return false;
-}   
         function formatDateThai(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
@@ -1417,31 +1428,61 @@ returnDatePicker.addEventListener('change', () => {
             }
         });
         function formatBookingMessage(data) {
-            let msg = `🎫 คำขอจองรถตู้ลีมูซีน\n`;
-            msg += `📋 หมายเลข: ${data.requestNumber}\n\n`;
-            msg += `👤 ชื่อ: ${data.customerName}\n`;
-            msg += `📞 เบอร์: ${data.phone}\n`;
-            msg += `🚐 ประเภท: ${data.tripType}\n`;
-            msg += `📅 วันที่: ${data.travelDate}\n`;
-            msg += `🛣️ เส้นทาง: ${data.route}\n`;
-            msg += `🕐 เวลา: ${data.departureTime} น.\n`;
-            msg += `✈️ สายการบิน: ${data.airline}\n`;
-            msg += `⏰ เวลาบิน: ${data.flightTime} น.\n`;
-            msg += `📍 ${data.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.location}\n`;
-            msg += `💺 จำนวนที่นั่ง: ${data.seatCount}\n`;
-            msg += `💰 ราคารวม: ${data.totalPrice.toLocaleString()} บาท\n`;
+            let msg = `╔═══════════════════════════╗\n`;
+            msg += `║   🚐 Al Hijrah & Travel   ║\n`;
+            msg += `║  คำขอจองรถตู้ลีมูซีน  ║\n`;
+            msg += `╚═══════════════════════════╝\n\n`;
+            
+            msg += `📋 หมายเลขจอง: ${data.requestNumber}\n`;
+            msg += `⏰ เวลาจอง: ${data.timestamp}\n\n`;
+            
+            msg += `┌─────────────────────────┐\n`;
+            msg += `│  👤 ข้อมูลผู้จอง\n`;
+            msg += `└─────────────────────────┘\n`;
+            msg += `• ชื่อ-สกุล: ${data.customerName}\n`;
+            msg += `• เบอร์โทร: ${data.phone}\n\n`;
+            
+            msg += `┌─────────────────────────┐\n`;
+            msg += `│  ${data.returnData ? '🚐 ข้อมูลขาไป' : '🚐 ข้อมูลการเดินทาง'}\n`;
+            msg += `└─────────────────────────┘\n`;
+            msg += `• ประเภท: ${data.tripType}\n`;
+            msg += `• วันที่: ${data.travelDate}\n`;
+            msg += `• เส้นทาง: ${data.route}\n`;
+            msg += `• รอบเดินทาง: ${data.departureTime} น.\n`;
+            msg += `• ${data.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.location}\n\n`;
+            
+            msg += `┌─────────────────────────┐\n`;
+            msg += `│  ✈️ ข้อมูลเที่ยวบิน\n`;
+            msg += `└─────────────────────────┘\n`;
+            msg += `• สายการบิน: ${data.airline}\n`;
+            msg += `• เวลา${data.route.includes('→ สนามบิน') ? 'ขึ้น' : 'ลง'}เครื่อง: ${data.flightTime} น.\n\n`;
             
             if (data.returnData) {
-                msg += `\n🔄 ข้อมูลขากลับ:\n`;
-                msg += `📅 วันที่: ${data.returnData.travelDate}\n`;
-                msg += `🛣️ เส้นทาง: ${data.returnData.route}\n`;
-                msg += `🕐 เวลา: ${data.returnData.departureTime} น.\n`;
-                msg += `✈️ สายการบิน: ${data.returnData.airline}\n`;
-                msg += `⏰ เวลาบิน: ${data.returnData.flightTime} น.\n`;
-                msg += `📍 ${data.returnData.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.returnData.location}\n`;
+                msg += `┌─────────────────────────┐\n`;
+                msg += `│  🔄 ข้อมูลขากลับ\n`;
+                msg += `└─────────────────────────┘\n`;
+                msg += `• วันที่: ${data.returnData.travelDate}\n`;
+                msg += `• เส้นทาง: ${data.returnData.route}\n`;
+                msg += `• รอบเดินทาง: ${data.returnData.departureTime} น.\n`;
+                msg += `• ${data.returnData.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.returnData.location}\n\n`;
+                
+                msg += `┌─────────────────────────┐\n`;
+                msg += `│  ✈️ ข้อมูลเที่ยวบิน (กลับ)\n`;
+                msg += `└─────────────────────────┘\n`;
+                msg += `• สายการบิน: ${data.returnData.airline}\n`;
+                msg += `• เวลา${data.returnData.route.includes('→ สนามบิน') ? 'ขึ้น' : 'ลง'}เครื่อง: ${data.returnData.flightTime} น.\n\n`;
             }
             
-            msg += `\n⏱️ เวลาจอง: ${data.timestamp}`;
+            msg += `┌─────────────────────────┐\n`;
+            msg += `│  💰 สรุปค่าใช้จ่าย\n`;
+            msg += `└─────────────────────────┘\n`;
+            msg += `• จำนวนที่นั่ง: ${data.seatCount} ที่นั่ง\n`;
+            msg += `• ราคา/ที่นั่ง: 350 บาท\n`;
+            msg += `• 💳 ราคารวมทั้งหมด: ${data.totalPrice.toLocaleString()} บาท\n\n`;
+            
+            msg += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `📌 รอการยืนยันจากเจ้าหน้าที่\n`;
+            msg += `💳 กรุณาชำระเงินหลังได้รับการยืนยันที่นั่ง`;
             
             return msg;
         }
@@ -1629,13 +1670,24 @@ returnDatePicker.addEventListener('change', () => {
                 popup.innerHTML = `
                     <div class="message-box">
                         <div class="message-header">
-                            <h3>✅ บันทึกข้อมูลสำเร็จ!</h3>
-                            <p style="font-size: 14px; margin-top: 5px;">หมายเลข: ${reqNum}</p>
-                            <p style="font-size: 13px; margin-top: 10px; opacity: 0.9;">กรุณาคัดลอกข้อความด้านล่างและส่งใน LINE Chat</p>
+                            <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                            <h3 style="font-size: 20px; margin: 0 0 8px 0;">จองสำเร็จ!</h3>
+                            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block;">
+                                <span style="font-size: 12px; opacity: 0.9;">หมายเลขจอง</span><br>
+                                <span style="font-size: 16px; font-weight: bold; letter-spacing: 1px;">${reqNum}</span>
+                            </div>
+                        </div>
+                        <div style="padding: 20px; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-left: 4px solid #ff9800; margin: 20px; border-radius: 10px;">
+                            <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.6;">
+                                📱 <strong>กรุณาคัดลอกข้อความด้านล่าง</strong><br>
+                                และส่งใน <strong>LINE Chat</strong> เพื่อแจ้งเจ้าหน้าที่
+                            </p>
                         </div>
                         <div class="message-content">${message}</div>
                         <div class="message-buttons">
-                            <button class="copy-btn" onclick="copyMessage(this)">📋 คัดลอกข้อความ</button>
+                            <button class="copy-btn" onclick="copyMessage(this)">
+                                <span style="font-size: 18px;">📋</span> คัดลอกข้อความ
+                            </button>
                             <button class="close-btn" onclick="closePopup()">ปิด</button>
                         </div>
                     </div>
