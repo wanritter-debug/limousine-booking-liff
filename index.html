@@ -900,7 +900,7 @@
     </div>
     <script>
         const CONFIG = {
-            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyn9BtNejpuFbpbxetSPY7Awp4NVYDTcM37twXKBOdRjHN_Pb_9d-MNwDd1PARKGmsM0g/exec',
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby9TpN85KFfpUFik-lmaASIFUNIZuz0YCwoX0P40xxo4RvSatPa0TW9nHnZIGPpMnKLEg/exec',
             LIFF_ID: '2008429094-vOzMl2Xm'
         };
         
@@ -1526,24 +1526,15 @@ returnDatePicker.addEventListener('change', () => {
                 return;
             }
             
-            
+            if (!userProfile) {  // ✅ ลบ !isLiffReady ออก
+                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารีเฟรชหน้าเว็บ');
+                return;
+            }
             
             const travelDateThai = formatDateThai(travelDate);
             const totalPrice = seatCount * 350;
             const reqNum = `LIM${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
-
             
-            if (!userProfile || !userProfile.userId) {
-                // สร้าง userId รูปแบบ LINE (U + 32 hex characters)
-                const randomHex = Array.from({length: 32}, () => 
-                    Math.floor(Math.random() * 16).toString(16)
-                ).join('');
-                
-                userProfile = {
-                    userId: 'U' + randomHex,  // ← รูปแบบเดียวกับ LINE User ID
-                    displayName: customerName || 'ผู้ใช้ผ่าน Web'
-                };
-            }
             const bookingData = {
     requestNumber: reqNum,
     tripType,
@@ -1569,24 +1560,15 @@ returnDatePicker.addEventListener('change', () => {
             
             try {
                 showDebug('กำลังส่งข้อมูลไป Google Sheets...');
-                
-                // ✅ ใช้ iframe แทน fetch
-                const params = new URLSearchParams({
-                    action: 'save',
-                    data: JSON.stringify(bookingData)
+                await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
                 });
                 
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = `${CONFIG.GOOGLE_SCRIPT_URL}?${params.toString()}`;
-                document.body.appendChild(iframe);
-                
-                // รอ 2 วินาที
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                iframe.remove();
                 showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
-            
+                
                 try {
                     showDebug('กำลังสร้างข้อความ...');
                     
