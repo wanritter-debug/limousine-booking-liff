@@ -690,19 +690,21 @@
                 </div>
             </div>
 
-            <div class="section">
+          <div class="section">
                 <div class="section-title" id="outboundFlightTitle">✈️ ข้อมูลเที่ยวบิน</div>
-                <div class="input-group">
-                    <label>สายการบิน</label>
+                <div class="input-group" id="airlineGroup">
+                    <label>สายการบิน <span style="color: #d32f2f;">*</span></label>
                     <input type="text" id="airline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
                     <small>ระบุสายการบินที่คุณจะเดินทาง</small>
+                    <small class="error">กรุณาระบุสายการบิน</small>
                 </div>
-                <div class="input-group">
-                    <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
+                <div class="input-group" id="flightTimeGroup">
+                    <label id="flightTimeLabel">เวลาขึ้นเครื่อง <span style="color: #d32f2f;">*</span></label>
                     <input type="time" id="flightTime">
                     <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
+                    <small class="error">กรุณาระบุเวลาเที่ยวบิน</small>
                 </div>
-            </div>
+          </div>
 
             <div class="return-section" id="returnSection">
                 <div class="trip-divider">
@@ -751,18 +753,19 @@
 
                 <div class="section">
                     <div class="section-title">✈️ ข้อมูลเที่ยวบิน (ขากลับ)</div>
-                    <div class="input-group">
-                        <label>สายการบิน</label>
+                    <div class="input-group" id="returnAirlineGroup">
+                        <label>สายการบิน <span style="color: #d32f2f;">*</span></label>
                         <input type="text" id="returnAirline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
                         <small>ระบุสายการบินที่คุณจะเดินทาง</small>
+                        <small class="error">กรุณาระบุสายการบิน</small>
                     </div>
-                    <div class="input-group">
-                        <label id="returnFlightTimeLabel">เวลาลงเครื่อง</label>
+                    <div class="input-group" id="returnFlightTimeGroup">
+                        <label id="returnFlightTimeLabel">เวลาลงเครื่อง <span style="color: #d32f2f;">*</span></label>
                         <input type="time" id="returnFlightTime">
                         <small id="returnFlightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
+                        <small class="error">กรุณาระบุเวลาเที่ยวบิน</small>
                     </div>
                 </div>
-            </div>
 
             <div class="section">
     <div class="section-title">👤 ข้อมูลผู้จอง</div>
@@ -1206,7 +1209,7 @@ returnDatePicker.addEventListener('change', () => {
         });
         
         document.getElementById('submitBtn').addEventListener('click', async () => {
-    ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'timeError'].forEach(clearError);
+    ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'airlineGroup', 'flightTimeGroup', 'timeError'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
             const route = document.querySelector('input[name="route"]:checked').value;
@@ -1250,10 +1253,18 @@ if (!selectedTime) {
                 showError('locationGroup', 'กรุณาระบุจุดรับ/ส่ง');
                 hasError = true;
             }
+            if (!airline || airline.length === 0) {
+                showError('airlineGroup', 'กรุณาระบุสายการบิน');
+                hasError = true;
+            }
             
+            if (!flightTime) {
+                showError('flightTimeGroup', 'กรุณาระบุเวลาเที่ยวบิน');
+                hasError = true;
+            }
             let returnData = null;
             if (tripType === 'ไป-กลับ') {
-                ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
+                ['returnDateGroup', 'returnLocationGroup', 'returnAirlineGroup', 'returnFlightTimeGroup', 'returnTimeError'].forEach(clearError);
                 
                 const returnTravelDate = returnDatePicker.value;
                 const returnRoute = document.querySelector('input[name="returnRoute"]:checked').value;
@@ -1276,15 +1287,23 @@ if (!selectedTime) {
                     showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
                     hasError = true;
                 }
+                if (!returnAirline || returnAirline.length === 0) {
+                    showError('returnAirlineGroup', 'กรุณาระบุสายการบิน');
+                    hasError = true;
+                }
                 
+                if (!returnFlightTime) {
+                    showError('returnFlightTimeGroup', 'กรุณาระบุเวลาเที่ยวบิน');
+                    hasError = true;
+                }
                 if (!hasError) {
                     returnData = {
                         route: returnRoute,
                         travelDate: formatDateThai(returnTravelDate),
                         travelDateRaw: returnTravelDate,
                         departureTime: returnSelectedTime,
-                        airline: returnAirline || 'ไม่ระบุ',
-                        flightTime: returnFlightTime || 'ไม่ระบุ',
+                        airline: returnAirline, 
+                        flightTime: returnFlightTime, 
                         location: returnLocation
                     };
                 }
@@ -1305,16 +1324,16 @@ if (!selectedTime) {
             const reqNum = `LIM${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
             
             const bookingData = {
-    requestNumber: reqNum,
-    tripType,
-    route,
-    travelDate: travelDateThai,
-    travelDateRaw: travelDate,
-    departureTime: selectedTime,
-    airline: airline || 'ไม่ระบุ',
-    flightTime: flightTime || 'ไม่ระบุ',
-    customerName: customerName,
-    phone,
+                requestNumber: reqNum,
+                tripType,
+                route,
+                travelDate: travelDateThai,
+                travelDateRaw: travelDate,
+                departureTime: selectedTime,
+                airline: airline,
+                flightTime: flightTime,
+                customerName: customerName,
+                phone,
                 location,
                 seatCount,
                 totalPrice,
@@ -1351,14 +1370,9 @@ if (!selectedTime) {
                     msg += `\n📅 วันที่: ${travelDateThai}`;
                     msg += `\n🕐 รอบเดินทาง: ${selectedTime} น.`;
                     
-                    if (airline && airline !== 'ไม่ระบุ') {
-                        msg += `\n✈️ สายการบิน: ${airline}`;
-                    }
-                    
-                    if (flightTime && flightTime !== 'ไม่ระบุ') {
-const timeLabel = route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
-                        msg += `\n🕐 ${timeLabel}: ${flightTime} น.`;
-                    }
+                    msg += `\n✈️ สายการบิน: ${airline}`;
+                    const timeLabel = route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+                    msg += `\n🕐 ${timeLabel}: ${flightTime} น.`;
                     
                     const locationLabel = route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
                     msg += `\n📍 ${locationLabel}: ${location}`;
@@ -1369,15 +1383,10 @@ const timeLabel = route.includes('สนามบิน →') ? 'เวลาล
                         msg += `\n📅 วันที่: ${returnData.travelDate}`;
                         msg += `\n🕐 รอบเดินทาง: ${returnData.departureTime} น.`;
                         
-                        if (returnData.airline && returnData.airline !== 'ไม่ระบุ') {
-                            msg += `\n✈️ สายการบิน: ${returnData.airline}`;
-                        }
-                        
-                        if (returnData.flightTime && returnData.flightTime !== 'ไม่ระบุ') {
-                            const timeLabel = returnData.route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
-                            msg += `\n🕐 ${timeLabel}: ${returnData.flightTime} น.`;
-                        }
-                        
+                        msg += `\n✈️ สายการบิน: ${returnData.airline}`;
+                        const timeLabel = returnData.route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+                        msg += `\n🕐 ${timeLabel}: ${returnData.flightTime} น.`;
+                                                
                         const returnLocationLabel = returnData.route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
                         msg += `\n📍 ${returnLocationLabel}: ${returnData.location}`;
                     }
