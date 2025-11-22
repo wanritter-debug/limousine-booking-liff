@@ -697,11 +697,12 @@
                     <input type="text" id="airline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
                     <small>ระบุสายการบินที่คุณจะเดินทาง</small>
                 </div>
-                <div class="input-group">
-                    <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
-                    <input type="time" id="flightTime">
-                    <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
-                </div>
+                <div class="input-group" id="flightTimeGroup">
+    <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
+    <input type="time" id="flightTime">
+    <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
+    <small class="error">กรุณาระบุเวลาเที่ยวบิน</small>
+</div>
             </div>
 
             <div class="return-section" id="returnSection">
@@ -756,11 +757,12 @@
                         <input type="text" id="returnAirline" placeholder="เช่น Thai Airways, AirAsia, Nok Air">
                         <small>ระบุสายการบินที่คุณจะเดินทาง</small>
                     </div>
-                    <div class="input-group">
-                        <label id="returnFlightTimeLabel">เวลาลงเครื่อง</label>
-                        <input type="time" id="returnFlightTime">
-                        <small id="returnFlightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
-                    </div>
+                    <div class="input-group" id="returnFlightTimeGroup">
+    <label id="returnFlightTimeLabel">เวลาลงเครื่อง</label>
+    <input type="time" id="returnFlightTime">
+    <small id="returnFlightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
+    <small class="error">กรุณาระบุเวลาเที่ยวบินขากลับ</small>
+</div>
                 </div>
             </div>
 
@@ -1206,7 +1208,7 @@ returnDatePicker.addEventListener('change', () => {
         });
         
         document.getElementById('submitBtn').addEventListener('click', async () => {
-    ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'timeError'].forEach(clearError);
+    ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'flightTimeGroup', 'returnFlightTimeGroup', 'timeError'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
             const route = document.querySelector('input[name="route"]:checked').value;
@@ -1250,7 +1252,19 @@ if (!selectedTime) {
                 showError('locationGroup', 'กรุณาระบุจุดรับ/ส่ง');
                 hasError = true;
             }
-            
+            if (!location) {
+    showError('locationGroup', 'กรุณาระบุจุดรับ/ส่ง');
+    hasError = true;
+}
+
+// ✅ เพิ่มส่วนนี้ - บังคับกรอกเวลาเที่ยวบิน
+if (!flightTime) {
+    showError('flightTimeGroup', 'กรุณาระบุเวลาเที่ยวบิน');
+    hasError = true;
+}
+
+let returnData = null;
+if (tripType === 'ไป-กลับ') {
             let returnData = null;
             if (tripType === 'ไป-กลับ') {
                 ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
@@ -1276,7 +1290,19 @@ if (!selectedTime) {
                     showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
                     hasError = true;
                 }
-                
+                if (!returnLocation) {
+    showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
+    hasError = true;
+}
+
+// ✅ เพิ่มส่วนนี้ - บังคับกรอกเวลาเที่ยวบินขากลับ
+if (!returnFlightTime) {
+    showError('returnFlightTimeGroup', 'กรุณาระบุเวลาเที่ยวบินขากลับ');
+    hasError = true;
+}
+
+if (!hasError) {
+    returnData = {
                 if (!hasError) {
                     returnData = {
                         route: returnRoute,
