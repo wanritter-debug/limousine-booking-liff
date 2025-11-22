@@ -1001,17 +1001,20 @@
             const flightTimeLabel = document.getElementById('flightTimeLabel');
             const flightTimeHint = document.getElementById('flightTimeHint');
             const locationTitle = document.getElementById('locationTitle');
+            const locationInput = document.getElementById('location');  // ← เพิ่มบรรทัดนี้
             
             if (routeId === 'pattani-airport') {
                 flightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
                 flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
                 locationTitle.textContent = '📍 จุดรับ';
-                document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+                locationInput.placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+                locationInput.setAttribute('required', 'required');
             } else {
                 flightTimeLabel.textContent = 'เวลาลงเครื่อง';
                 flightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
                 locationTitle.textContent = '📍 จุดส่ง';
-                document.getElementById('location').placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
+                locationInput.placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
+                locationInput.setAttribute('required', 'required');
             }
             
             renderTimeSlots(routeId);
@@ -1035,6 +1038,7 @@
             const returnFlightTimeLabel = document.getElementById('returnFlightTimeLabel');
             const returnFlightTimeHint = document.getElementById('returnFlightTimeHint');
             const returnLocationTitle = document.getElementById('returnLocationTitle');
+            const returnLocationInput = document.getElementById('returnLocation');  // ← เพิ่มบรรทัดนี้
             
             const actualRoute = routeId.replace('return-', '');
             
@@ -1042,12 +1046,14 @@
                 returnFlightTimeLabel.textContent = 'เวลาขึ้นเครื่อง';
                 returnFlightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินขึ้น';
                 returnLocationTitle.textContent = '📍 จุดรับ';
-                document.getElementById('returnLocation').placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+                returnLocationInput.placeholder = 'ระบุที่อยู่หรือจุดรับในปัตตานี';
+                returnLocationInput.setAttribute('required', 'required');
             } else {
                 returnFlightTimeLabel.textContent = 'เวลาลงเครื่อง';
                 returnFlightTimeHint.textContent = 'ระบุเวลาที่เครื่องบินลง';
                 returnLocationTitle.textContent = '📍 จุดส่ง';
-                document.getElementById('returnLocation').placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
+                returnLocationInput.placeholder = 'ระบุที่อยู่หรือจุดหมายปลายทางในปัตตานี';
+                returnLocationInput.setAttribute('required', 'required');
             }
             
             renderReturnTimeSlots(actualRoute);
@@ -1139,7 +1145,13 @@ returnDatePicker.addEventListener('change', () => {
         document.getElementById('returnSelectedTime').value = '';
     }
 });
+        document.getElementById('location').addEventListener('input', () => {
+            clearError('locationGroup');
+        });
         
+        document.getElementById('returnLocation').addEventListener('input', () => {
+            clearError('returnLocationGroup');
+        });
         document.getElementById('seatCount').addEventListener('input', function() {
             const tripType = document.querySelector('input[name="tripType"]:checked').value;
             const minSeats = tripType === 'ไป-กลับ' ? 2 : 1;
@@ -1219,26 +1231,30 @@ returnDatePicker.addEventListener('change', () => {
             const selectedTime = document.getElementById('selectedTime').value;
             const airline = document.getElementById('airline').value.trim();
             const flightTime = document.getElementById('flightTime').value;
-           const customerName = document.getElementById('customerName').value.trim();
-const phone = document.getElementById('phone').value.trim();
-const location = document.getElementById('location').value.trim();
-const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
-
-let hasError = false;
-
-if (!travelDate) {
-    showError('dateGroup', 'กรุณาเลือกวันที่');
-    hasError = true;
-}
-
-if (!customerName || customerName.trim().length === 0) {
-    showError('nameGroup', 'กรุณากรอกชื่อ');
-    hasError = true;
-}
-
-if (!selectedTime) {
+            const customerName = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
+            
+            let hasError = false;
+            
+            if (!travelDate) {
                 showError('dateGroup', 'กรุณาเลือกวันที่');
                 hasError = true;
+            }
+            
+            if (!customerName || customerName.trim().length === 0) {
+                showError('nameGroup', 'กรุณากรอกชื่อ');
+                hasError = true;
+            }
+            if (!location || location.trim().length === 0) {
+                const locationLabel = route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
+                showError('locationGroup', `กรุณาระบุ${locationLabel}`);
+                hasError = true;
+            }
+            if (!selectedTime) {
+                            showError('dateGroup', 'กรุณาเลือกวันที่');
+                            hasError = true;
             }
             
             if (!selectedTime) {
@@ -1291,7 +1307,11 @@ if (!selectedTime) {
                     showError('returnFlightTimeGroup', 'กรุณาระบุเวลาเที่ยวบิน');
                     hasError = true;
                 }
-                
+                if (!returnLocation || returnLocation.trim().length === 0) {
+                    const returnLocationLabel = returnRoute.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
+                    showError('returnLocationGroup', `กรุณาระบุ${returnLocationLabel}ขากลับ`);
+                    hasError = true;
+                }
                 if (!hasError) {
                     returnData = {
                     route: returnRoute,
