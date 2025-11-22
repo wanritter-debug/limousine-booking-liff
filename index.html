@@ -704,45 +704,13 @@
                      <!-- สำหรับมือถือ - Time Picker -->
                      <input type="time" id="flightTime" class="mobile-time-picker" step="60">
                      
-                     <!-- สำหรับ PC - Dropdown -->
+                     <!-- สำหรับ PC - Text Input -->
                      <div class="desktop-time-select" style="display: none;">
-                         <div style="display: flex; gap: 10px; align-items: center;">
-                             <select id="flightHour" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                 <option value="">ชั่วโมง</option>
-                                 <option value="00">00</option>
-                                 <option value="01">01</option>
-                                 <option value="02">02</option>
-                                 <option value="03">03</option>
-                                 <option value="04">04</option>
-                                 <option value="05">05</option>
-                                 <option value="06">06</option>
-                                 <option value="07">07</option>
-                                 <option value="08">08</option>
-                                 <option value="09">09</option>
-                                 <option value="10">10</option>
-                                 <option value="11">11</option>
-                                 <option value="12">12</option>
-                                 <option value="13">13</option>
-                                 <option value="14">14</option>
-                                 <option value="15">15</option>
-                                 <option value="16">16</option>
-                                 <option value="17">17</option>
-                                 <option value="18">18</option>
-                                 <option value="19">19</option>
-                                 <option value="20">20</option>
-                                 <option value="21">21</option>
-                                 <option value="22">22</option>
-                                 <option value="23">23</option>
-                             </select>
-                             <span style="font-size: 20px; font-weight: bold;">:</span>
-                             <select id="flightMinute" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                 <option value="">นาที</option>
-                                 <option value="00">00</option>
-                                 <option value="15">15</option>
-                                 <option value="30">30</option>
-                                 <option value="45">45</option>
-                             </select>
-                         </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="flightHour" placeholder="ชั่วโมง (00-23)" maxlength="2" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; text-align: center; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                            <span style="font-size: 20px; font-weight: bold;">:</span>
+                            <input type="text" id="flightMinute" placeholder="นาที (00-59)" maxlength="2" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; text-align: center; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                        </div>
                      </div>
                      
                      <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
@@ -809,44 +777,12 @@
                             <!-- สำหรับมือถือ - Time Picker -->
                             <input type="time" id="returnFlightTime" class="mobile-time-picker" step="60">
                             
-                            <!-- สำหรับ PC - Dropdown -->
+                            <!-- สำหรับ PC - Text Input -->
                             <div class="desktop-time-select" style="display: none;">
                                 <div style="display: flex; gap: 10px; align-items: center;">
-                                    <select id="returnFlightHour" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                        <option value="">ชั่วโมง</option>
-                                        <option value="00">00</option>
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">03</option>
-                                        <option value="04">04</option>
-                                        <option value="05">05</option>
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
-                                        <option value="08">08</option>
-                                        <option value="09">09</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                        <option value="23">23</option>
-                                    </select>
+                                    <input type="text" id="returnFlightHour" placeholder="ชั่วโมง (00-23)" maxlength="2" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; text-align: center; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
                                     <span style="font-size: 20px; font-weight: bold;">:</span>
-                                    <select id="returnFlightMinute" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                                        <option value="">นาที</option>
-                                        <option value="00">00</option>
-                                        <option value="15">15</option>
-                                        <option value="30">30</option>
-                                        <option value="45">45</option>
-                                    </select>
+                                    <input type="text" id="returnFlightMinute" placeholder="นาที (00-59)" maxlength="2" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; text-align: center; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
                                 </div>
                             </div>
                             
@@ -1266,32 +1202,78 @@ returnDatePicker.addEventListener('change', () => {
             }
         }
         
-        // ตั้งค่า Event Listeners สำหรับ Dropdown (PC)
+        // ตั้งค่า Event Listeners สำหรับ Text Input (PC)
         function setupDropdownListeners() {
-            // ขาไป
-            document.getElementById('flightHour').addEventListener('change', updateFlightTimeFromDropdown);
-            document.getElementById('flightMinute').addEventListener('change', updateFlightTimeFromDropdown);
+            // ขาไป - เฉพาะตัวเลข
+            document.getElementById('flightHour').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                updateFlightTimeFromDropdown();
+            });
+            document.getElementById('flightMinute').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                updateFlightTimeFromDropdown();
+            });
             
-            // ขากลับ
-            document.getElementById('returnFlightHour').addEventListener('change', updateReturnFlightTimeFromDropdown);
-            document.getElementById('returnFlightMinute').addEventListener('change', updateReturnFlightTimeFromDropdown);
+            // ขากลับ - เฉพาะตัวเลข
+            document.getElementById('returnFlightHour').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                updateReturnFlightTimeFromDropdown();
+            });
+            document.getElementById('returnFlightMinute').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                updateReturnFlightTimeFromDropdown();
+            });
         }
         
         function updateFlightTimeFromDropdown() {
-            const hour = document.getElementById('flightHour').value;
-            const minute = document.getElementById('flightMinute').value;
+            let hour = document.getElementById('flightHour').value;
+            let minute = document.getElementById('flightMinute').value;
             
-            if (hour && minute) {
+            // ตรวจสอบและแก้ไขค่า
+            if (hour.length === 2) {
+                const h = parseInt(hour);
+                if (h > 23) hour = '23';
+                if (h < 0) hour = '00';
+                hour = hour.padStart(2, '0');
+                document.getElementById('flightHour').value = hour;
+            }
+            
+            if (minute.length === 2) {
+                const m = parseInt(minute);
+                if (m > 59) minute = '59';
+                if (m < 0) minute = '00';
+                minute = minute.padStart(2, '0');
+                document.getElementById('flightMinute').value = minute;
+            }
+            
+            if (hour.length === 2 && minute.length === 2) {
                 document.getElementById('flightTime').value = `${hour}:${minute}`;
                 clearError('flightTimeGroup');
             }
         }
         
         function updateReturnFlightTimeFromDropdown() {
-            const hour = document.getElementById('returnFlightHour').value;
-            const minute = document.getElementById('returnFlightMinute').value;
+            let hour = document.getElementById('returnFlightHour').value;
+            let minute = document.getElementById('returnFlightMinute').value;
             
-            if (hour && minute) {
+            // ตรวจสอบและแก้ไขค่า
+            if (hour.length === 2) {
+                const h = parseInt(hour);
+                if (h > 23) hour = '23';
+                if (h < 0) hour = '00';
+                hour = hour.padStart(2, '0');
+                document.getElementById('returnFlightHour').value = hour;
+            }
+            
+            if (minute.length === 2) {
+                const m = parseInt(minute);
+                if (m > 59) minute = '59';
+                if (m < 0) minute = '00';
+                minute = minute.padStart(2, '0');
+                document.getElementById('returnFlightMinute').value = minute;
+            }
+            
+            if (hour.length === 2 && minute.length === 2) {
                 document.getElementById('returnFlightTime').value = `${hour}:${minute}`;
                 clearError('returnFlightTimeGroup');
             }
