@@ -1560,14 +1560,21 @@ returnDatePicker.addEventListener('change', () => {
             
             try {
                 showDebug('กำลังส่งข้อมูลไป Google Sheets...');
-                await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                
+                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'text/plain;charset=utf-8'  // ✅ เปลี่ยน header
+                    },
                     body: JSON.stringify(bookingData)
                 });
                 
-                showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
+                // ✅ ตรวจสอบว่าส่งสำเร็จ
+                if (response.ok) {
+                    showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
+                } else {
+                    throw new Error('Failed to send data');
+                }
                 
                 try {
                     showDebug('กำลังสร้างข้อความ...');
