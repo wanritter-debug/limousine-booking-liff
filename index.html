@@ -1570,15 +1570,21 @@ returnDatePicker.addEventListener('change', () => {
             try {
                 showDebug('กำลังส่งข้อมูลไป Google Sheets...');
                 
-                await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(bookingData)
+                // ✅ ใช้ iframe แทน fetch
+                const params = new URLSearchParams({
+                    action: 'save',
+                    data: JSON.stringify(bookingData)
                 });
                 
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = `${CONFIG.GOOGLE_SCRIPT_URL}?${params.toString()}`;
+                document.body.appendChild(iframe);
+                
+                // รอ 2 วินาที
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                iframe.remove();
                 showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
             
                 try {
