@@ -1261,7 +1261,7 @@ if (!flightTime) {
 
 let returnData = null;
 if (tripType === 'ไป-กลับ') {
-            if (tripType === 'ไป-กลับ') {
+      
                 ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
                 
                 const returnTravelDate = returnDatePicker.value;
@@ -1294,7 +1294,7 @@ if (!returnFlightTime) {
 
 if (!hasError) {
     returnData = {
-                        route: returnRoute,
+        route: returnRoute,
                         travelDate: formatDateThai(returnTravelDate),
                         travelDateRaw: returnTravelDate,
                         departureTime: returnSelectedTime,
