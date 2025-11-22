@@ -521,21 +521,6 @@
             .terms-content { padding: 20px 15px; }
             .terms-buttons { flex-direction: column; }
         }
-        /* บังคับให้ input time เป็น 24 ชั่วโมง */
-        input[type="time"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.5);
-        }
-        
-        input[type="time"] {
-            -webkit-appearance: textfield;
-            -moz-appearance: textfield;
-        }
-        
-        /* ซ่อน AM/PM */
-        input[type="time"]::-webkit-datetime-edit-ampm-field {
-            display: none;
-        
-        }
     </style>
 </head>
 <body>
@@ -715,7 +700,51 @@
                 </div>
                 <div class="input-group" id="flightTimeGroup">
                      <label id="flightTimeLabel">เวลาขึ้นเครื่อง</label>
-                     <input type="time" id="flightTime" step="60">
+                     
+                     <!-- สำหรับมือถือ - Time Picker -->
+                     <input type="time" id="flightTime" class="mobile-time-picker" step="60">
+                     
+                     <!-- สำหรับ PC - Dropdown -->
+                     <div class="desktop-time-select" style="display: none;">
+                         <div style="display: flex; gap: 10px; align-items: center;">
+                             <select id="flightHour" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                 <option value="">ชั่วโมง</option>
+                                 <option value="00">00</option>
+                                 <option value="01">01</option>
+                                 <option value="02">02</option>
+                                 <option value="03">03</option>
+                                 <option value="04">04</option>
+                                 <option value="05">05</option>
+                                 <option value="06">06</option>
+                                 <option value="07">07</option>
+                                 <option value="08">08</option>
+                                 <option value="09">09</option>
+                                 <option value="10">10</option>
+                                 <option value="11">11</option>
+                                 <option value="12">12</option>
+                                 <option value="13">13</option>
+                                 <option value="14">14</option>
+                                 <option value="15">15</option>
+                                 <option value="16">16</option>
+                                 <option value="17">17</option>
+                                 <option value="18">18</option>
+                                 <option value="19">19</option>
+                                 <option value="20">20</option>
+                                 <option value="21">21</option>
+                                 <option value="22">22</option>
+                                 <option value="23">23</option>
+                             </select>
+                             <span style="font-size: 20px; font-weight: bold;">:</span>
+                             <select id="flightMinute" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                 <option value="">นาที</option>
+                                 <option value="00">00</option>
+                                 <option value="15">15</option>
+                                 <option value="30">30</option>
+                                 <option value="45">45</option>
+                             </select>
+                         </div>
+                     </div>
+                     
                      <small id="flightTimeHint">ระบุเวลาที่เครื่องบินขึ้น</small>
                      <small class="error">กรุณาระบุเวลาเที่ยวบิน</small>
                 </div>
@@ -776,7 +805,51 @@
                          </div>
                         <div class="input-group" id="returnFlightTimeGroup">
                             <label id="returnFlightTimeLabel">เวลาลงเครื่อง</label>
-                            <input type="time" id="returnFlightTime" step="60">
+                            
+                            <!-- สำหรับมือถือ - Time Picker -->
+                            <input type="time" id="returnFlightTime" class="mobile-time-picker" step="60">
+                            
+                            <!-- สำหรับ PC - Dropdown -->
+                            <div class="desktop-time-select" style="display: none;">
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <select id="returnFlightHour" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                        <option value="">ชั่วโมง</option>
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                    </select>
+                                    <span style="font-size: 20px; font-weight: bold;">:</span>
+                                    <select id="returnFlightMinute" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+                                        <option value="">นาที</option>
+                                        <option value="00">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <small id="returnFlightTimeHint">ระบุเวลาที่เครื่องบินลง</small>
                             <small class="error">กรุณาระบุเวลาเที่ยวบิน</small>
                         </div>
@@ -1175,7 +1248,57 @@ returnDatePicker.addEventListener('change', () => {
             }
             updateTotalPrice();
         });
+                // ตรวจสอบว่าเป็น PC หรือมือถือ
+        function detectDevice() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // มือถือ - แสดง Time Picker
+                document.querySelectorAll('.mobile-time-picker').forEach(el => el.style.display = 'block');
+                document.querySelectorAll('.desktop-time-select').forEach(el => el.style.display = 'none');
+            } else {
+                // PC - แสดง Dropdown
+                document.querySelectorAll('.mobile-time-picker').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.desktop-time-select').forEach(el => el.style.display = 'block');
+                
+                // เพิ่ม Event Listeners สำหรับ Dropdown
+                setupDropdownListeners();
+            }
+        }
         
+        // ตั้งค่า Event Listeners สำหรับ Dropdown (PC)
+        function setupDropdownListeners() {
+            // ขาไป
+            document.getElementById('flightHour').addEventListener('change', updateFlightTimeFromDropdown);
+            document.getElementById('flightMinute').addEventListener('change', updateFlightTimeFromDropdown);
+            
+            // ขากลับ
+            document.getElementById('returnFlightHour').addEventListener('change', updateReturnFlightTimeFromDropdown);
+            document.getElementById('returnFlightMinute').addEventListener('change', updateReturnFlightTimeFromDropdown);
+        }
+        
+        function updateFlightTimeFromDropdown() {
+            const hour = document.getElementById('flightHour').value;
+            const minute = document.getElementById('flightMinute').value;
+            
+            if (hour && minute) {
+                document.getElementById('flightTime').value = `${hour}:${minute}`;
+                clearError('flightTimeGroup');
+            }
+        }
+        
+        function updateReturnFlightTimeFromDropdown() {
+            const hour = document.getElementById('returnFlightHour').value;
+            const minute = document.getElementById('returnFlightMinute').value;
+            
+            if (hour && minute) {
+                document.getElementById('returnFlightTime').value = `${hour}:${minute}`;
+                clearError('returnFlightTimeGroup');
+            }
+        }
+        
+        // เรียกใช้ฟังก์ชันตรวจสอบอุปกรณ์
+        detectDevice();
         renderTimeSlots('pattani-airport');
         renderReturnTimeSlots('airport-pattani');
         selectTripType('oneway');
