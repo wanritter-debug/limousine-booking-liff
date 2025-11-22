@@ -1248,16 +1248,12 @@ if (!selectedTime) {
                 hasError = true;
             }
             
-            if (!location) {
-                showError('locationGroup', 'กรุณาระบุจุดรับ/ส่ง');
-                hasError = true;
-            }
-            if (!location) {
+           if (!location) {
     showError('locationGroup', 'กรุณาระบุจุดรับ/ส่ง');
     hasError = true;
 }
 
-// ✅ เพิ่มส่วนนี้ - บังคับกรอกเวลาเที่ยวบิน
+// ✅ บังคับกรอกเวลาเที่ยวบิน
 if (!flightTime) {
     showError('flightTimeGroup', 'กรุณาระบุเวลาเที่ยวบิน');
     hasError = true;
@@ -1265,7 +1261,6 @@ if (!flightTime) {
 
 let returnData = null;
 if (tripType === 'ไป-กลับ') {
-            let returnData = null;
             if (tripType === 'ไป-กลับ') {
                 ['returnDateGroup', 'returnLocationGroup', 'returnTimeError'].forEach(clearError);
                 
@@ -1286,16 +1281,12 @@ if (tripType === 'ไป-กลับ') {
                     hasError = true;
                 }
                 
-                if (!returnLocation) {
-                    showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
-                    hasError = true;
-                }
-                if (!returnLocation) {
+if (!returnLocation) {
     showError('returnLocationGroup', 'กรุณาระบุจุดรับ/ส่งขากลับ');
     hasError = true;
 }
 
-// ✅ เพิ่มส่วนนี้ - บังคับกรอกเวลาเที่ยวบินขากลับ
+// ✅ บังคับกรอกเวลาเที่ยวบินขากลับ
 if (!returnFlightTime) {
     showError('returnFlightTimeGroup', 'กรุณาระบุเวลาเที่ยวบินขากลับ');
     hasError = true;
@@ -1303,8 +1294,6 @@ if (!returnFlightTime) {
 
 if (!hasError) {
     returnData = {
-                if (!hasError) {
-                    returnData = {
                         route: returnRoute,
                         travelDate: formatDateThai(returnTravelDate),
                         travelDateRaw: returnTravelDate,
