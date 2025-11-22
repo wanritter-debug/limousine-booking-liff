@@ -1378,16 +1378,30 @@ returnDatePicker.addEventListener('change', () => {
                 await waitForLiff();
                 showDebug('✅ LIFF SDK โหลดสำเร็จ');
             } catch (error) {
-                showDebug('❌ LIFF SDK ไม่พร้อมใช้งาน');
-                showMessage('error', '⚠️ กรุณาเปิดไฟล์บน HTTPS Server');
-                return;
+                showDebug('❌ ไม่สามารถเชื่อมต่อ LIFF - ใช้งานแบบ Standalone');
+                isLiffReady = false;
+                userProfile = { 
+                    userId: 'web_' + Date.now(), 
+                    displayName: 'ผู้ใช้ผ่าน Web' 
+                };
+                return;  // ← หยุดแต่มี userProfile แล้ว ✅
             }
             
             try {
                 showDebug('กำลังเริ่มต้น LIFF...');
                 await liff.init({ liffId: CONFIG.LIFF_ID });
                 showDebug('✅ LIFF เริ่มต้นสำเร็จ');
-                
+
+                // ✅ ตรวจสอบว่าเปิดใน LINE หรือไม่
+                if (!liff.isInClient()) {
+                    showDebug('⚠️ เปิดนอก LINE App - ใช้งานแบบ Standalone');
+                    isLiffReady = false;
+                    userProfile = { 
+                        userId: 'web_' + Date.now(), 
+                        displayName: 'ผู้ใช้ผ่าน Web' 
+                    };
+                    return;
+                }
                                
                 isLiffReady = true;
                 showDebug('✅ เปิดใน LINE App แล้ว');
@@ -1401,8 +1415,12 @@ returnDatePicker.addEventListener('change', () => {
                 
             } catch (error) {
                 console.error('LIFF Error:', error);
-                showDebug(`❌ LIFF Error: ${error.message}`);
-                showMessage('error', '❌ เกิดข้อผิดพลาดในการเชื่อมต่อ LINE');
+                showDebug(`❌ LIFF Error - ใช้งานแบบ Standalone`);
+                isLiffReady = false;
+                userProfile = { 
+                    userId: 'web_' + Date.now(), 
+                    displayName: 'ผู้ใช้ผ่าน Web' 
+                };
             }
         });
         
