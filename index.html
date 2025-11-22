@@ -1570,22 +1570,16 @@ returnDatePicker.addEventListener('change', () => {
             try {
                 showDebug('กำลังส่งข้อมูลไป Google Sheets...');
                 
-                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 
-                        'Content-Type': 'text/plain;charset=utf-8'  // ← เปลี่ยนกลับเป็น text/plain
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(bookingData)
                 });
                 
-                // ✅ เพิ่มการตรวจสอบ response
-                const result = await response.json();
-                if (result.success) {
-                    showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
-                } else {
-                    throw new Error(result.message || 'Failed to save data');
-                }
+                showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
             
                 try {
                     showDebug('กำลังสร้างข้อความ...');
