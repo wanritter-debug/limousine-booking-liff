@@ -1526,15 +1526,19 @@ returnDatePicker.addEventListener('change', () => {
                 return;
             }
             
-            if (!userProfile) {  // ✅ ลบ !isLiffReady ออก
-                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารีเฟรชหน้าเว็บ');
-                return;
-            }
+            
             
             const travelDateThai = formatDateThai(travelDate);
             const totalPrice = seatCount * 350;
             const reqNum = `LIM${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+
             
+            if (!userProfile || !userProfile.userId) {
+                userProfile = {
+                    userId: 'WEB' + Date.now().toString().slice(-10),
+                    displayName: customerName
+                };
+            }
             const bookingData = {
     requestNumber: reqNum,
     tripType,
