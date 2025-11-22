@@ -1532,8 +1532,8 @@ returnDatePicker.addEventListener('change', () => {
                 return;
             }
             
-            if (!isLiffReady || !userProfile) {
-                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารอสักครู่หรือรีเฟรชหน้าเว็บ');
+            if (!userProfile) {  // ✅ ลบ !isLiffReady ออก
+                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารีเฟรชหน้าเว็บ');
                 return;
             }
             
