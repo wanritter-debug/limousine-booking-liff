@@ -1534,9 +1534,14 @@ returnDatePicker.addEventListener('change', () => {
 
             
             if (!userProfile || !userProfile.userId) {
+                // สร้าง userId รูปแบบ LINE (U + 32 hex characters)
+                const randomHex = Array.from({length: 32}, () => 
+                    Math.floor(Math.random() * 16).toString(16)
+                ).join('');
+                
                 userProfile = {
-                    userId: 'WEB' + Date.now().toString().slice(-10),
-                    displayName: customerName
+                    userId: 'U' + randomHex,  // ← รูปแบบเดียวกับ LINE User ID
+                    displayName: customerName || 'ผู้ใช้ผ่าน Web'
                 };
             }
             const bookingData = {
