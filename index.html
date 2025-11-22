@@ -1572,17 +1572,20 @@ returnDatePicker.addEventListener('change', () => {
                 
                 const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',  // ✅ เพิ่มบรรทัดนี้
                     headers: { 
-                        'Content-Type': 'application/json'  // ✅ เปลี่ยนเป็น application/json
+                        'Content-Type': 'text/plain;charset=utf-8'  // ← เปลี่ยนกลับเป็น text/plain
                     },
                     body: JSON.stringify(bookingData)
                 });
                 
-                // ⚠️ เมื่อใช้ no-cors จะไม่สามารถเช็ค response.ok ได้
-                // แต่ถ้าไม่มี error แปลว่าส่งสำเร็จ
-                showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
-                
+                // ✅ เพิ่มการตรวจสอบ response
+                const result = await response.json();
+                if (result.success) {
+                    showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
+                } else {
+                    throw new Error(result.message || 'Failed to save data');
+                }
+            
                 try {
                     showDebug('กำลังสร้างข้อความ...');
                     
