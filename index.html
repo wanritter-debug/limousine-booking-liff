@@ -899,7 +899,19 @@
         </div>
     </div>
     <script>
+        function acceptTerms() {
+            termsAccepted = true;
+            document.getElementById('termsOverlay').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+        }
         
+        function declineTerms() {
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                liff.closeWindow();
+            } else {
+                alert('กรุณายอมรับเงื่อนไขเพื่อดำเนินการจองค่ะ');
+            }
+        }
         const CONFIG = {
             LIFF_ID: '2008429094-vOzMl2Xm'
         };
@@ -917,19 +929,7 @@
         let isLiffReady = false;
         let termsAccepted = false;
         
-        function acceptTerms() {
-            termsAccepted = true;
-            document.getElementById('termsOverlay').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
-        }
         
-        function declineTerms() {
-            if (typeof liff !== 'undefined' && liff.isInClient()) {
-                liff.closeWindow();
-            } else {
-                alert('กรุณายอมรับเงื่อนไขเพื่อดำเนินการจองค่ะ');
-            }
-        }
         
         function showDebug(message) {
             const debugEl = document.getElementById('debugInfo');
