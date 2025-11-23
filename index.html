@@ -1456,16 +1456,12 @@ returnDatePicker.addEventListener('change', () => {
                 showError('nameGroup', 'กรุณากรอกชื่อ');
                 hasError = true;
             }
+            
             if (!location || location.trim().length === 0) {
                 const locationLabel = route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
                 showError('locationGroup', `กรุณาระบุ${locationLabel}`);
                 hasError = true;
             }
-            if (!selectedTime) {
-                            showError('dateGroup', 'กรุณาเลือกวันที่');
-                            hasError = true;
-            }
-            
             if (!selectedTime) {
                 showError('timeError');
                 hasError = true;
@@ -1645,20 +1641,16 @@ returnDatePicker.addEventListener('change', () => {
                         showMessagePopup(msg, reqNum);
                     }
                     
+               
                 } catch (lineError) {
-                    console.error('LINE Error:', lineError);
-                    showDebug(`⚠️ LINE Error: ${lineError.message}`);
-                    showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
-                }
+                        console.error('LINE Error:', lineError);
+                        showDebug(`⚠️ LINE Error: ${lineError.message}`);
+                        showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
+                    }
+                    
+                    showLoading(false);
+            });
                 
-            } catch (error) {
-                console.error('Submit Error:', error);
-                showDebug(`❌ Error: ${error.message}`);
-                showMessage('error', '❌ เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
-            } finally {
-                showLoading(false);
-            }
-        });
 
              function showMessagePopup(message, reqNum) {
                 const popup = document.createElement('div');
