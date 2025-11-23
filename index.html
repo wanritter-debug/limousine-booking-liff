@@ -899,6 +899,7 @@
         </div>
     </div>
     <script>
+        
         const CONFIG = {
             LIFF_ID: '2008429094-vOzMl2Xm'
         };
@@ -1001,6 +1002,8 @@
         // วันที่ผ่านไปแล้ว = ไม่ให้เลือก
         return false;
     }
+    
+ 
         function formatDateThai(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
@@ -1427,65 +1430,7 @@ returnDatePicker.addEventListener('change', () => {
                 };
             }
         });
-        function formatBookingMessage(data) {
-            let msg = `╔═══════════════════════════╗\n`;
-            msg += `║   🚐 Al Hijrah & Travel   ║\n`;
-            msg += `║  คำขอจองรถตู้ลีมูซีน  ║\n`;
-            msg += `╚═══════════════════════════╝\n\n`;
-            
-            msg += `📋 หมายเลขจอง: ${data.requestNumber}\n`;
-            msg += `⏰ เวลาจอง: ${data.timestamp}\n\n`;
-            
-            msg += `┌─────────────────────────┐\n`;
-            msg += `│  👤 ข้อมูลผู้จอง\n`;
-            msg += `└─────────────────────────┘\n`;
-            msg += `• ชื่อ-สกุล: ${data.customerName}\n`;
-            msg += `• เบอร์โทร: ${data.phone}\n\n`;
-            
-            msg += `┌─────────────────────────┐\n`;
-            msg += `│  ${data.returnData ? '🚐 ข้อมูลขาไป' : '🚐 ข้อมูลการเดินทาง'}\n`;
-            msg += `└─────────────────────────┘\n`;
-            msg += `• ประเภท: ${data.tripType}\n`;
-            msg += `• วันที่: ${data.travelDate}\n`;
-            msg += `• เส้นทาง: ${data.route}\n`;
-            msg += `• รอบเดินทาง: ${data.departureTime} น.\n`;
-            msg += `• ${data.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.location}\n\n`;
-            
-            msg += `┌─────────────────────────┐\n`;
-            msg += `│  ✈️ ข้อมูลเที่ยวบิน\n`;
-            msg += `└─────────────────────────┘\n`;
-            msg += `• สายการบิน: ${data.airline}\n`;
-            msg += `• เวลา${data.route.includes('→ สนามบิน') ? 'ขึ้น' : 'ลง'}เครื่อง: ${data.flightTime} น.\n\n`;
-            
-            if (data.returnData) {
-                msg += `┌─────────────────────────┐\n`;
-                msg += `│  🔄 ข้อมูลขากลับ\n`;
-                msg += `└─────────────────────────┘\n`;
-                msg += `• วันที่: ${data.returnData.travelDate}\n`;
-                msg += `• เส้นทาง: ${data.returnData.route}\n`;
-                msg += `• รอบเดินทาง: ${data.returnData.departureTime} น.\n`;
-                msg += `• ${data.returnData.route.includes('→ สนามบิน') ? 'จุดรับ' : 'จุดส่ง'}: ${data.returnData.location}\n\n`;
-                
-                msg += `┌─────────────────────────┐\n`;
-                msg += `│  ✈️ ข้อมูลเที่ยวบิน (กลับ)\n`;
-                msg += `└─────────────────────────┘\n`;
-                msg += `• สายการบิน: ${data.returnData.airline}\n`;
-                msg += `• เวลา${data.returnData.route.includes('→ สนามบิน') ? 'ขึ้น' : 'ลง'}เครื่อง: ${data.returnData.flightTime} น.\n\n`;
-            }
-            
-            msg += `┌─────────────────────────┐\n`;
-            msg += `│  💰 สรุปค่าใช้จ่าย\n`;
-            msg += `└─────────────────────────┘\n`;
-            msg += `• จำนวนที่นั่ง: ${data.seatCount} ที่นั่ง\n`;
-            msg += `• ราคา/ที่นั่ง: 350 บาท\n`;
-            msg += `• 💳 ราคารวมทั้งหมด: ${data.totalPrice.toLocaleString()} บาท\n\n`;
-            
-            msg += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
-            msg += `📌 รอการยืนยันจากเจ้าหน้าที่\n`;
-            msg += `💳 กรุณาชำระเงินหลังได้รับการยืนยันที่นั่ง`;
-            
-            return msg;
-        }
+        
         document.getElementById('submitBtn').addEventListener('click', async () => {
     ['dateGroup', 'nameGroup', 'phoneGroup', 'locationGroup', 'timeError', 'airlineGroup', 'flightTimeGroup'].forEach(clearError);
             
@@ -1594,17 +1539,10 @@ returnDatePicker.addEventListener('change', () => {
                 return;
             }
             
-            if (!userProfile || !userProfile.userId) {
-                // สร้าง userId รูปแบบ LINE (U + 32 hex characters)
-                const randomHex = Array.from({length: 32}, () => 
-                    Math.floor(Math.random() * 16).toString(16)
-                ).join('');
-                
-                userProfile = {
-                    userId: 'U' + randomHex,
-                    displayName: customerName || 'ผู้ใช้ผ่าน Web'
-                };
-             }
+            if (!userProfile) {  // ✅ ลบ !isLiffReady ออก
+                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารีเฟรชหน้าเว็บ');
+                return;
+            }
             
             const travelDateThai = formatDateThai(travelDate);
             const totalPrice = seatCount * 350;
@@ -1633,34 +1571,92 @@ returnDatePicker.addEventListener('change', () => {
             showLoading(true);
             showDebug('กำลังส่งข้อมูล...');
             
-            try {
-                showDebug('กำลังสร้างข้อความ...');
-                
-                const message = formatBookingMessage(bookingData);
-                
-                // ตรวจสอบว่าเปิดใน LINE หรือไม่
-                if (isLiffReady && liff.isInClient()) {
-                    showDebug('ส่งข้อความผ่าน LIFF...');
-                    await liff.sendMessages([{
-                        type: 'text',
-                        text: message
-                    }]);
-                    showLoading(false);
-                    showMessage('success', '✅ ส่งคำขอจองสำเร็จ! กรุณาตรวจสอบข้อความใน Chat');
-                    setTimeout(() => {
-                        if (liff.isInClient()) {
-                            liff.closeWindow();
+                        
+                try {
+                    showDebug('กำลังสร้างข้อความ...');
+                    
+                    let msg = `✅ รับคำขอเช็คที่นั่งรถตู้ลีมูซีนเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}`;
+                    
+                    if (tripType === 'ไป-กลับ') {
+                        msg += `\n\n🛫 ขาไป`;
+                    }
+                    
+                    msg += `\n🚐 เส้นทาง: ${route}`;
+                    msg += `\n📅 วันที่: ${travelDateThai}`;
+                    msg += `\n🕐 รอบเดินทาง: ${selectedTime} น.`;
+                    
+                    if (airline && airline !== 'ไม่ระบุ') {
+                        msg += `\n✈️ สายการบิน: ${airline}`;
+                    }
+                    
+                    if (flightTime && flightTime !== 'ไม่ระบุ') {
+                        const timeLabel = route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+                        msg += `\n🕐 ${timeLabel}: ${flightTime} น.`;
+                    }
+                    
+                    const locationLabel = route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
+                    msg += `\n📍 ${locationLabel}: ${location}`;
+                    
+                    if (returnData) {
+                        msg += `\n\n🛬 ขากลับ`;
+                        msg += `\n🚐 เส้นทาง: ${returnData.route}`;
+                        msg += `\n📅 วันที่: ${returnData.travelDate}`;
+                        msg += `\n🕐 รอบเดินทาง: ${returnData.departureTime} น.`;
+                        
+                        if (returnData.airline && returnData.airline !== 'ไม่ระบุ') {
+                            msg += `\n✈️ สายการบิน: ${returnData.airline}`;
                         }
-                    }, 2000);
-                } else {
-                    // เปิดนอก LINE - แสดง popup ให้คัดลอก
-                    showLoading(false);
-                    showMessagePopup(message, reqNum);
+                        
+                        if (returnData.flightTime && returnData.flightTime !== 'ไม่ระบุ') {
+                            const timeLabel = returnData.route.includes('สนามบิน →') ? 'เวลาลงเครื่อง' : 'เวลาขึ้นเครื่อง';
+                            msg += `\n🕐 ${timeLabel}: ${returnData.flightTime} น.`;
+                        }
+                        
+                        const returnLocationLabel = returnData.route.includes('สนามบิน →') ? 'จุดส่ง' : 'จุดรับ';
+                        msg += `\n📍 ${returnLocationLabel}: ${returnData.location}`;
+                    }
+                    
+                    msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
+                    msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
+                    msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
+                    msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
+                    
+                    // ลองส่ง LINE Message
+                    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+                        try {
+                            await liff.sendMessages([{
+                                type: 'text',
+                                text: msg
+                            }]);
+                            showDebug('✅ ส่งข้อความ LINE สำเร็จ');
+                            showMessage('success', `✅ จองสำเร็จ! หมายเลข: ${reqNum}`);
+                            
+                            setTimeout(() => {
+                                if (liff.isInClient()) {
+                                    liff.closeWindow();
+                                }
+                            }, 2000);
+                        } catch (lineError) {
+                            showDebug('⚠️ ไม่สามารถส่ง LINE Message');
+                            showMessagePopup(msg, reqNum);
+                        }
+                    } else {
+                        showDebug('⚠️ เปิดผ่าน Browser - แสดงข้อความให้ copy');
+                        showMessagePopup(msg, reqNum);
+                    }
+                    
+                } catch (lineError) {
+                    console.error('LINE Error:', lineError);
+                    showDebug(`⚠️ LINE Error: ${lineError.message}`);
+                    showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
                 }
+                
             } catch (error) {
+                console.error('Submit Error:', error);
+                showDebug(`❌ Error: ${error.message}`);
+                showMessage('error', '❌ เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+            } finally {
                 showLoading(false);
-                console.error('Error:', error);
-                showMessage('error', '❌ เกิดข้อผิดพลาด: ' + error.message);
             }
         });
 
@@ -1670,24 +1666,13 @@ returnDatePicker.addEventListener('change', () => {
                 popup.innerHTML = `
                     <div class="message-box">
                         <div class="message-header">
-                            <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
-                            <h3 style="font-size: 20px; margin: 0 0 8px 0;">จองสำเร็จ!</h3>
-                            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block;">
-                                <span style="font-size: 12px; opacity: 0.9;">หมายเลขจอง</span><br>
-                                <span style="font-size: 16px; font-weight: bold; letter-spacing: 1px;">${reqNum}</span>
-                            </div>
-                        </div>
-                        <div style="padding: 20px; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-left: 4px solid #ff9800; margin: 20px; border-radius: 10px;">
-                            <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.6;">
-                                📱 <strong>กรุณาคัดลอกข้อความด้านล่าง</strong><br>
-                                และส่งใน <strong>LINE Chat</strong> เพื่อแจ้งเจ้าหน้าที่
-                            </p>
+                            <h3>✅ บันทึกข้อมูลสำเร็จ!</h3>
+                            <p style="font-size: 14px; margin-top: 5px;">หมายเลข: ${reqNum}</p>
+                            <p style="font-size: 13px; margin-top: 10px; opacity: 0.9;">กรุณาคัดลอกข้อความด้านล่างและส่งใน LINE Chat</p>
                         </div>
                         <div class="message-content">${message}</div>
                         <div class="message-buttons">
-                            <button class="copy-btn" onclick="copyMessage(this)">
-                                <span style="font-size: 18px;">📋</span> คัดลอกข้อความ
-                            </button>
+                            <button class="copy-btn" onclick="copyMessage(this)">📋 คัดลอกข้อความ</button>
                             <button class="close-btn" onclick="closePopup()">ปิด</button>
                         </div>
                     </div>
