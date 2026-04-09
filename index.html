@@ -682,7 +682,7 @@
             <p>จองรถตู้ลีมูซีน รับ-ส่ง สนามบินหาดใหญ่</p>
             <p class="subtitle">สนามบินหาดใหญ่ ⇄ ปัตตานี</p>
             <div class="price-badge">
-                🚐 360 บาท/ที่นั่ง/รอบ
+                🚐 380 บาท/ที่นั่ง/รอบ
             </div>
             <div class="user-info" id="userInfo" style="display: none;">
                 <img id="userPicture" src="" alt="Profile">
@@ -876,11 +876,11 @@
                 <div class="input-group">
                     <label>จำนวนที่นั่งที่ต้องการจอง</label>
                     <input type="number" id="seatCount" min="1" value="1" style="text-align: center; font-size: 18px; font-weight: bold;">
-                    <small>1 ที่นั่ง = 360 บาท</small>
+                    <small>1 ที่นั่ง = 380 บาท</small>
                 </div>
                 <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;">
                     <p style="font-size: 14px; color: #666; margin-bottom: 5px;">ราคารวม</p>
-                    <p style="font-size: 24px; font-weight: bold; color: #2e7d32;" id="totalPrice">360 บาท</p>
+                    <p style="font-size: 24px; font-weight: bold; color: #2e7d32;" id="totalPrice">380 บาท</p>
                 </div>
             </div>
 
@@ -1212,7 +1212,7 @@
         
         function updateTotalPrice() {
             const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
-            const total = seatCount * 360;
+            const total = seatCount * 380;
             document.getElementById('totalPrice').textContent = total.toLocaleString() + ' บาท';
         }
         
@@ -1541,7 +1541,7 @@ returnDatePicker.addEventListener('change', () => {
             }
             
             const travelDateThai = formatDateThai(travelDate);
-            const totalPrice = seatCount * 360;
+            const totalPrice = seatCount * 380;
             const reqNum = `LIM${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
             
             const bookingData = {
