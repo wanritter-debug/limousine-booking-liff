@@ -1593,7 +1593,7 @@ returnDatePicker.addEventListener('change', () => {
                     
                     const headerMsg = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
                         ? `📋 คำขอจอง ${vehicleType}\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`
-                        : `✅ รับคำขอเช็คที่นั่ง${vehicleType}เรียบร้อยแล้วค่ะ\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`;
+                        : `📋 คำขอจองเช็คที่นั่ง${vehicleType}\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`;
                     let msg = `${headerMsg}\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}\n🚗 ประเภทรถ: ${vehicleType}`;
                                         
                     if (tripType === 'ไป-กลับ') {
@@ -1699,7 +1699,7 @@ returnDatePicker.addEventListener('change', () => {
                 popup.messageText = message;
                 popup.querySelector('h3').textContent = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
                     ? `📋 คำขอจอง ${vehicleType}`
-                    : `✅ รับคำขอเช็คที่นั่ง${vehicleType}`;
+                    : `📋 คำขอจองเช็คที่นั่ง${vehicleType}`;
             }
             
             function copyMessage(btn) {
