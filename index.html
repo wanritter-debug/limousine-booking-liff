@@ -716,6 +716,16 @@
             </div>
 
             <div class="section">
+                <div class="section-title">🚗 ประเภทรถ</div>
+                <div class="input-group">
+                    <select id="vehicleType">
+                        <option value="รถตู้ลีมูซีน">รถตู้ลีมูซีน</option>
+                        <option value="รถเก๋งเหมาคัน 4 ที่นั่ง">รถเก๋งเหมาคัน (4 ที่นั่ง)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
                 <div class="section-title" id="outboundDateTitle">📅 วันที่เดินทาง</div>
                 <div class="input-group" id="dateGroup">
                     <label>กรุณาเลือกวันที่</label>
@@ -1444,6 +1454,7 @@ returnDatePicker.addEventListener('change', () => {
             const phone = document.getElementById('phone').value.trim();
             const location = document.getElementById('location').value.trim();
             const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
+            const vehicleType = document.getElementById('vehicleType').value;
             
             let hasError = false;
             
@@ -1634,11 +1645,11 @@ returnDatePicker.addEventListener('change', () => {
                             }, 2000);
                         } catch (lineError) {
                             showDebug('⚠️ ไม่สามารถส่ง LINE Message');
-                            showMessagePopup(msg, reqNum);
+                            showMessagePopup(msg, reqNum, vehicleType);
                         }
                     } else {
                         showDebug('⚠️ เปิดผ่าน Browser - แสดงข้อความให้ copy');
-                        showMessagePopup(msg, reqNum);
+                        showMessagePopup(msg, reqNum, vehicleType);
                     }
                     
                
@@ -1652,8 +1663,8 @@ returnDatePicker.addEventListener('change', () => {
             });
                 
 
-             function showMessagePopup(message, reqNum) {
-                const popup = document.createElement('div');
+            function showMessagePopup(message, reqNum, vehicleType) {
+        const popup = document.createElement('div');
                 popup.className = 'message-popup active';
                 popup.innerHTML = `
                     <div class="message-box">
@@ -1671,6 +1682,7 @@ returnDatePicker.addEventListener('change', () => {
                 `;
                 document.body.appendChild(popup);
                 popup.messageText = message;
+                popup.querySelector('h3').textContent = `📋 คำขอจอง ${vehicleType}`;
             }
             
             function copyMessage(btn) {
