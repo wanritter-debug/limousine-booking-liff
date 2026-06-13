@@ -881,7 +881,7 @@
     </div>  <!-- ← ปิด phoneGroup -->
 </div>  <!-- ← ปิด section ข้อมูลผู้จอง (บรรทัดนี้ที่ขาดหายไป!) -->
             
-            <div class="section">
+            <div class="section" id="seatSection">
                 <div class="section-title">💺 จำนวนที่นั่ง</div>
                 <div class="input-group">
                     <label>จำนวนที่นั่งที่ต้องการจอง</label>
@@ -1370,6 +1370,15 @@ returnDatePicker.addEventListener('change', () => {
         renderTimeSlots('pattani-airport');
         renderReturnTimeSlots('airport-pattani');
         selectTripType('oneway');
+
+        document.getElementById('vehicleType').addEventListener('change', function() {
+            const seatSection = document.getElementById('seatSection');
+            if (this.value === 'รถเก๋งเหมาคัน 4 ที่นั่ง') {
+                seatSection.style.display = 'none';
+            } else {
+                seatSection.style.display = 'block';
+            }
+        });
         
         window.addEventListener('load', async () => {
             let retries = 0;
@@ -1623,10 +1632,14 @@ returnDatePicker.addEventListener('change', () => {
                         msg += `\n📍 ${returnLocationLabel}: ${returnData.location}`;
                     }
                     
-                    msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
-                    msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
-                    msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
-                    msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
+                        msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
+                    if (vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง') {
+                        msg += `\n💰 ราคา: เจ้าหน้าที่จะแจ้งให้ทราบโดยเร็วที่สุดค่ะ`;
+                    } else {
+                        msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
+                        msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
+                    }
+                        msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
                     
                     // ลองส่ง LINE Message
                     if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
