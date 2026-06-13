@@ -1591,8 +1591,11 @@ returnDatePicker.addEventListener('change', () => {
                 try {
                     showDebug('กำลังสร้างข้อความ...');
                     
-                    let msg = `✅ รับคำขอเช็คที่นั่งรถตู้ลีมูซีนเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}`;
-                    
+                    const headerMsg = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
+                        ? `📋 คำขอจอง ${vehicleType}\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`
+                        : `✅ รับคำขอเช็คที่นั่ง${vehicleType}เรียบร้อยแล้วค่ะ\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`;
+                    let msg = `${headerMsg}\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}\n🚗 ประเภทรถ: ${vehicleType}`;
+                                        
                     if (tripType === 'ไป-กลับ') {
                         msg += `\n\n🛫 ขาไป`;
                     }
@@ -1684,7 +1687,6 @@ returnDatePicker.addEventListener('change', () => {
                         <div class="message-header">
                             <h3>✅ บันทึกข้อมูลสำเร็จ!</h3>
                             <p style="font-size: 14px; margin-top: 5px;">หมายเลข: ${reqNum}</p>
-                            <p style="font-size: 13px; margin-top: 10px; opacity: 0.9;">กรุณาคัดลอกข้อความด้านล่างและส่งใน LINE Chat</p>
                         </div>
                         <div class="message-content">${message}</div>
                         <div class="message-buttons">
@@ -1695,7 +1697,9 @@ returnDatePicker.addEventListener('change', () => {
                 `;
                 document.body.appendChild(popup);
                 popup.messageText = message;
-                popup.querySelector('h3').textContent = `📋 คำขอจอง ${vehicleType}`;
+                popup.querySelector('h3').textContent = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
+                    ? `📋 คำขอจอง ${vehicleType}`
+                    : `✅ รับคำขอเช็คที่นั่ง${vehicleType}`;
             }
             
             function copyMessage(btn) {
