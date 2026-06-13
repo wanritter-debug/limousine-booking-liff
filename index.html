@@ -716,16 +716,6 @@
             </div>
 
             <div class="section">
-                <div class="section-title">🚗 ประเภทรถ</div>
-                <div class="input-group">
-                    <select id="vehicleType">
-                        <option value="รถตู้ลีมูซีน">รถตู้ลีมูซีน</option>
-                        <option value="รถเก๋งเหมาคัน 4 ที่นั่ง">รถเก๋งเหมาคัน (4 ที่นั่ง)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="section">
                 <div class="section-title" id="outboundDateTitle">📅 วันที่เดินทาง</div>
                 <div class="input-group" id="dateGroup">
                     <label>กรุณาเลือกวันที่</label>
@@ -881,7 +871,7 @@
     </div>  <!-- ← ปิด phoneGroup -->
 </div>  <!-- ← ปิด section ข้อมูลผู้จอง (บรรทัดนี้ที่ขาดหายไป!) -->
             
-            <div class="section" id="seatSection">
+            <div class="section">
                 <div class="section-title">💺 จำนวนที่นั่ง</div>
                 <div class="input-group">
                     <label>จำนวนที่นั่งที่ต้องการจอง</label>
@@ -1370,15 +1360,6 @@ returnDatePicker.addEventListener('change', () => {
         renderTimeSlots('pattani-airport');
         renderReturnTimeSlots('airport-pattani');
         selectTripType('oneway');
-
-        document.getElementById('vehicleType').addEventListener('change', function() {
-            const seatSection = document.getElementById('seatSection');
-            if (this.value === 'รถเก๋งเหมาคัน 4 ที่นั่ง') {
-                seatSection.style.display = 'none';
-            } else {
-                seatSection.style.display = 'block';
-            }
-        });
         
         window.addEventListener('load', async () => {
             let retries = 0;
@@ -1463,7 +1444,6 @@ returnDatePicker.addEventListener('change', () => {
             const phone = document.getElementById('phone').value.trim();
             const location = document.getElementById('location').value.trim();
             const seatCount = parseInt(document.getElementById('seatCount').value) || 1;
-            const vehicleType = document.getElementById('vehicleType').value;
             
             let hasError = false;
             
@@ -1591,11 +1571,8 @@ returnDatePicker.addEventListener('change', () => {
                 try {
                     showDebug('กำลังสร้างข้อความ...');
                     
-                    const headerMsg = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
-                        ? `📋 คำขอจอง ${vehicleType}\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`
-                        : `📋 คำขอจองเช็คที่นั่ง${vehicleType}\nกรุณาคัดลอกข้อความนี้ส่งไปยัง LINE @alhijrah`;
-                    let msg = `${headerMsg}\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}\n🚗 ประเภทรถ: ${vehicleType}`;
-                                        
+                    let msg = `✅ รับคำขอเช็คที่นั่งรถตู้ลีมูซีนเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🎫 ประเภท: ${tripType}`;
+                    
                     if (tripType === 'ไป-กลับ') {
                         msg += `\n\n🛫 ขาไป`;
                     }
@@ -1635,14 +1612,10 @@ returnDatePicker.addEventListener('change', () => {
                         msg += `\n📍 ${returnLocationLabel}: ${returnData.location}`;
                     }
                     
-                        msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
-                    if (vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง') {
-                        msg += `\n💰 ราคา: เจ้าหน้าที่จะแจ้งให้ทราบโดยเร็วที่สุดค่ะ`;
-                    } else {
-                        msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
-                        msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
-                    }
-                        msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
+                    msg += `\n\n━━━━━━━━━━━━━━━━\n👤 ชื่อผู้จอง: ${customerName}\n📞 เบอร์โทร: ${phone}`;
+                    msg += `\n💺 จำนวนที่นั่ง: ${seatCount} ที่นั่ง`;
+                    msg += `\n💰 ราคารวม: ${totalPrice.toLocaleString()} บาท`;
+                    msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับเพื่อยืนยันการจองโดยเร็วที่สุดค่ะ`;
                     
                     // ลองส่ง LINE Message
                     if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
@@ -1661,11 +1634,11 @@ returnDatePicker.addEventListener('change', () => {
                             }, 2000);
                         } catch (lineError) {
                             showDebug('⚠️ ไม่สามารถส่ง LINE Message');
-                            showMessagePopup(msg, reqNum, vehicleType);
+                            showMessagePopup(msg, reqNum);
                         }
                     } else {
                         showDebug('⚠️ เปิดผ่าน Browser - แสดงข้อความให้ copy');
-                        showMessagePopup(msg, reqNum, vehicleType);
+                        showMessagePopup(msg, reqNum);
                     }
                     
                
@@ -1679,14 +1652,15 @@ returnDatePicker.addEventListener('change', () => {
             });
                 
 
-            function showMessagePopup(message, reqNum, vehicleType) {
-        const popup = document.createElement('div');
+             function showMessagePopup(message, reqNum) {
+                const popup = document.createElement('div');
                 popup.className = 'message-popup active';
                 popup.innerHTML = `
                     <div class="message-box">
                         <div class="message-header">
                             <h3>✅ บันทึกข้อมูลสำเร็จ!</h3>
                             <p style="font-size: 14px; margin-top: 5px;">หมายเลข: ${reqNum}</p>
+                            <p style="font-size: 13px; margin-top: 10px; opacity: 0.9;">กรุณาคัดลอกข้อความด้านล่างและส่งใน LINE Chat</p>
                         </div>
                         <div class="message-content">${message}</div>
                         <div class="message-buttons">
@@ -1697,9 +1671,6 @@ returnDatePicker.addEventListener('change', () => {
                 `;
                 document.body.appendChild(popup);
                 popup.messageText = message;
-                popup.querySelector('h3').textContent = vehicleType === 'รถเก๋งเหมาคัน 4 ที่นั่ง'
-                    ? `📋 คำขอจอง ${vehicleType}`
-                    : `📋 คำขอจองเช็คที่นั่ง${vehicleType}`;
             }
             
             function copyMessage(btn) {
