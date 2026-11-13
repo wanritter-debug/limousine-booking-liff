@@ -1525,14 +1525,11 @@
                 // ซิงค์สถานะ route option ตาม vehicleType ปัจจุบัน
                 const initVehicle = document.getElementById('vehicleType').value;
                 if (initVehicle === 'รถเก๋งเหมาคัน 3 ที่นั่ง') {
-                    document.querySelector('[onclick="selectRoute(\'airport-pattani\')"]').style.display = 'none';
                     document.querySelector('[onclick="selectTripType(\'roundtrip\')"]').style.display = 'none';
                 }
         
                 document.getElementById('vehicleType').addEventListener('change', function() {
-                    const isCar = this.value === 'รถเก๋งเหมาคัน 3 ที่นั่ง';
-                    const tripType = document.querySelector('input[name="tripType"]:checked').value;
-                    
+                    const isCar = this.value === 'รถเก๋งเหมาคัน 3 ที่นั่ง';                    
                     document.getElementById('seatSection').style.display = isCar ? 'none' : 'block';
                     document.getElementById('carCountSection').style.display = isCar ? 'block' : 'none';
                     document.getElementById('freeTimeSection').style.display = isCar ? 'block' : 'none';
@@ -1541,15 +1538,13 @@
                     // ซ่อน/แสดง ตัวเลือกไป-กลับ
                     const roundtripOption = document.querySelector('[onclick="selectTripType(\'roundtrip\')"]');
                     if (isCar) {
-                        roundtripOption.style.display = 'none';
-                        selectTripType('oneway');
-                        // บังคับเส้นทางเป็น ปัตตานี → สนามบิน เท่านั้น
-                        selectRoute('pattani-airport');
-                        document.querySelector('[onclick="selectRoute(\'airport-pattani\')"]').style.display = 'none';
-                    } else {
-                        roundtripOption.style.display = 'block';
-                        document.querySelector('[onclick="selectRoute(\'airport-pattani\')"]').style.display = 'block';
-                    }
+    roundtripOption.style.display = 'none';
+    selectTripType('oneway');
+} else {
+    roundtripOption.style.display = 'block';
+}
+const tripType = document.querySelector('input[name="tripType"]:checked').value; 
+
                     
                     // ขากลับ
                     document.getElementById('returnFreeTimeSection').style.display = (isCar && tripType === 'ไป-กลับ') ? 'block' : 'none';
@@ -1559,6 +1554,7 @@
                     if (isCar) {
                         document.getElementById('carCount').value = tripType === 'ไป-กลับ' ? 2 : 1;
                         document.getElementById('carCount').min = tripType === 'ไป-กลับ' ? 2 : 1;
+                        updateCarTotalPrice();
                     }
                     
                     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
